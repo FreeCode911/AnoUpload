@@ -1,0 +1,25 @@
+entrypoint = "index.mjs"
+modules = ["nodejs-20", "python-3.10"]
+hidden = [".config", "package-lock.json"]
+
+[gitHubImport]
+requiredFiles = [".replit", "replit.nix", "package.json", "package-lock.json"]
+
+[nix]
+channel = "stable-23_05"
+
+[unitTest]
+language = "nodejs"
+
+[deployment]
+run = ["node", "index.mjs"]
+deploymentTarget = "cloudrun"
+ignorePorts = false
+
+[[ports]]
+localPort = 4000
+externalPort = 3000
+
+[[ports]]
+localPort = 5000
+externalPort = 80

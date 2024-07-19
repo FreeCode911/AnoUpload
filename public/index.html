@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="description"
+            content="Lykfie - Free, Anonymous, and Unlimited File Hosting. Upload files up to 10GBMB with ease!"
+        />
+        <meta
+            name="keywords"
+            content="file hosting, free file upload, anonymous file hosting, unlimited file upload, secure file sharing, file sharing service, upload documents, upload photos, upload files online, file upload site, file storage"
+        />
+        <meta name="author" content="LykCloud Team" />
+        <title>Lykfie - Free, Anonymous, and Unlimited File Hosting</title>
+        <link rel="icon" href="file/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="file/favicon.ico" type="image/x-icon" />
+        <link
+            rel="stylesheet"
+            href="https://www.w3schools.com/w3css/4/w3.css"
+        />
+        <style>
+            body {
+                font-family: "Courier New", Courier, monospace;
+                background-color: #1a1a1a;
+                color: #c5c8c6;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                margin: 0;
+                transition: background-color 0.5s ease;
+            }
+
+            .upload-container {
+                background-color: #252525;
+                padding: 40px;
+                border-radius: 8px;
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+                max-width: 400px;
+                width: 100%;
+                text-align: center;
+                transition: transform 0.2s ease;
+            }
+
+            .upload-container:hover {
+                transform: translateY(-5px);
+            }
+
+            h1 {
+                color: #8abeb7;
+                font-size: 28px;
+                margin-bottom: 20px;
+                text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            }
+
+            input[type="file"] {
+                display: none;
+            }
+
+            .custom-file-upload {
+                border: 2px solid #8abeb7;
+                color: #6abab7;
+                background-color: #6abab7; /* Changed background color */
+                display: inline-block;
+                cursor: pointer;
+                padding: 15px 30px;
+                border-radius: 30px;
+                font-size: 18px;
+                transition: all 0.3s ease;
+                outline: none;
+                margin: 10px 0;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            }
+
+            .custom-file-upload:hover {
+                color: #fff;
+                background-color: #4e9a06;
+                border-color: #4e9a06; /* Adjust border color on hover */
+            }
+
+            .upload-button {
+                background-color: #6abab7;
+                color: #fff;
+                padding: 15px 30px;
+                border: none;
+                border-radius: 30px;
+                cursor: pointer;
+                font-size: 18px;
+                transition: background-color 0.3s ease;
+                margin-top: 20px;
+                outline: none;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            }
+
+            .upload-button:hover {
+                background-color: #6abab7;
+            }
+
+            .upload-button.w3-hide {
+                display: none;
+            }
+
+            .cancel-button {
+                background-color: #cc0000;
+                color: #fff;
+                padding: 15px 30px;
+                border: none;
+                border-radius: 30px;
+                cursor: pointer;
+                font-size: 18px;
+                transition: background-color 0.3s ease;
+                margin-top: 20px;
+                outline: none;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            }
+
+            .cancel-button:hover {
+                background-color: #a70000;
+            }
+
+            .cancel-button.w3-hide {
+                display: none;
+            }
+
+            .progress-bar {
+                background-color: #8abeb7;
+                height: 100%;
+                width: 0;
+                transition: width 0.3s ease;
+                text-align: center;
+                line-height: 20px;
+                color: #fff;
+                font-weight: bold;
+                border-radius: 5px;
+            }
+
+            .progress-bar-container {
+                margin-top: 20px;
+                width: 100%;
+                height: 20px;
+                background-color: rgba(255, 255, 255, 0.1);
+                border-radius: 10px;
+                overflow: hidden;
+            }
+
+            .file-url {
+                margin-top: 20px;
+                font-size: 16px;
+                overflow-wrap: break-word;
+                transition: opacity 0.3s ease;
+                opacity: 0;
+            }
+
+            .file-url.show {
+                opacity: 1;
+            }
+
+            .error-message {
+                margin-top: 10px;
+                color: #cc0000;
+                font-size: 14px;
+                transition: opacity 0.3s ease;
+                opacity: 0;
+            }
+
+            .error-message.show {
+                opacity: 1;
+            }
+
+            .footer {
+                margin-top: 20px;
+                font-size: 12px;
+                color: #999;
+            }
+
+            .footer a {
+                color: #8abeb7;
+                text-decoration: none;
+                transition: color 0.3s;
+            }
+
+            .footer a:hover {
+                color: #4e9a06;
+            }
+
+            .file-name {
+                margin-top: 10px;
+                font-size: 16px;
+                color: #999;
+            }
+
+            .upload-success {
+                color: #4e9a06;
+                font-size: 18px;
+                text-align: center;
+                margin-top: 20px;
+            }
+
+            .upload-success a {
+                color: #8abeb7;
+                text-decoration: none;
+                font-weight: bold;
+            }
+
+            .upload-success a:hover {
+                text-decoration: underline;
+            }
+
+            .copy-url-button {
+                background-color: #8abeb7;
+                color: #fff;
+                border: none;
+                border-radius: 5px;
+                padding: 10px 15px;
+                cursor: pointer;
+                font-size: 16px;
+                margin-top: 10px;
+                transition: background-color 0.3s ease;
+            }
+
+            .copy-url-button:hover {
+                background-color: #4e9a06;
+            }
+
+            .copy-url-button:active {
+                background-color: #3b7100;
+            }
+
+            .modal {
+                display: none;
+                position: fixed;
+                z-index: 1;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                overflow: auto;
+                background-color: rgba(0, 0, 0, 0.7);
+            }
+
+            .modal-content {
+                background-color: #252525;
+                margin: 15% auto;
+                padding: 20px;
+                border: 1px solid #888;
+                width: 80%;
+                max-width: 500px;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                text-align: center;
+            }
+
+            .close {
+                color: #999;
+                float: right;
+                font-size: 28px;
+                font-weight: bold;
+            }
+
+            .close:hover,
+            .close:focus {
+                color: #fff;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+            .modal-body p {
+                font-size: 18px;
+                color: #4e9a06;
+            }
+
+            .modal-body a {
+                color: #8abeb7;
+                font-weight: bold;
+                text-decoration: none;
+                transition: color 0.3s;
+            }
+
+            .modal-body a:hover {
+                color: #4e9a06;
+            }
+
+            /* Code aesthetics */
+
+            .code-block {
+                background-color: #1a1a1a;
+                color: #c5c8c6;
+                padding: 20px;
+                border-radius: 8px;
+                margin-top: 20px;
+                font-size: 14px;
+                font-family: "Courier New", Courier, monospace;
+                white-space: pre-wrap;
+                overflow-x: auto;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            }
+
+            .code-block .comment {
+                color: #75715e;
+                font-style: italic;
+            }
+
+            .code-block .keyword {
+                color: #cc7832;
+                font-weight: bold;
+            }
+
+            .code-block .string {
+                color: #6a8759;
+            }
+
+            .code-block .number {
+                color: #6897bb;
+            }
+
+            .code-block .operator {
+                color: #fff;
+            }
+
+            .code-block .punctuation {
+                color: #fff;
+            }
+
+            .code-block .function {
+                color: #b5bd68;
+            }
+
+            .code-block .variable {
+                color: #9cdcfe;
+            }
+
+            .code-block .class {
+                color: #4e9a06;
+            }
+
+            .code-block .builtin {
+                color: #81a2be;
+            }
+
+            .banner {
+                text-align: center;
+                margin-bottom: 12px;
+            }
+            .banner img {
+                max-width: 56%;
+                height: auto;
+                border-radius: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="w3-container">
+            <div class="upload-container">
+                <div class="banner">
+                    <img
+                        src="https://lykfile.me/cn/7B3CF0-2024-07-07-LYK-CLOUD.gif"
+                        alt="Banner Image"
+                    />
+                </div>
+                <h1>Upload a File</h1>
+                <label
+                    for="file-upload"
+                    class="custom-file-upload w3-btn w3-blue"
+                >
+                    Select File
+                </label>
+                <form
+                    id="upload-form"
+                    method="post"
+                    enctype="multipart/form-data"
+                >
+                    <input
+                        id="file-upload"
+                        type="file"
+                        name="file"
+                        class="w3-hide"
+                    />
+                    <div id="file-name" class="file-name"></div>
+                    <button
+                        id="upload-button"
+                        type="button"
+                        class="upload-button w3-btn w3-green w3-hide"
+                    >
+                        Upload
+                    </button>
+                    <button
+                        id="cancel-button"
+                        type="button"
+                        class="cancel-button w3-btn w3-red w3-hide"
+                    >
+                        Cancel
+                    </button>
+                    <!-- Progress Bar -->
+                    <div class="progress-bar-container">
+                        <div
+                            id="progress-bar"
+                            class="progress-bar w3-container w3-green w3-center"
+                            style="width: 0%"
+                        >
+                            0%
+                        </div>
+                    </div>
+                    <!-- File URL Display -->
+                    <div id="file-url" class="file-url upload-success"></div>
+                    <!-- Error Message Display -->
+                    <div id="error-message" class="error-message"></div>
+                </form>
+                <!-- Footer -->
+                <div class="footer">
+                    <p>
+                        Need help?
+                        <a href="https://lykfile.me" target="_blank"
+                            >Visit our Help Center</a
+                        >
+                    </p>
+                    <p>&copy; 2024 LykFile.me. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <div id="modal-body" class="modal-body"></div>
+            </div>
+        </div>
+
+        <script>
+            const uploadForm = document.getElementById("upload-form");
+            const fileUpload = document.getElementById("file-upload");
+            const uploadButton = document.getElementById("upload-button");
+            const cancelButton = document.getElementById("cancel-button");
+            const progressBar = document.getElementById("progress-bar");
+            const fileUrlElement = document.getElementById("file-url");
+            const errorMessageElement =
+                document.getElementById("error-message");
+            const fileNameElement = document.getElementById("file-name");
+            const modal = document.getElementById("myModal");
+            const modalBody = document.getElementById("modal-body");
+            const span = document.getElementsByClassName("close")[0];
+
+            let xhr; // Define xhr globally for cancel operation
+
+            fileUpload.addEventListener("change", () => {
+                const file = fileUpload.files[0];
+                if (file) {
+                    fileNameElement.textContent = `Selected file: ${file.name}`;
+                    if (file.size > 10 * 1024 * 1024 * 1024) {
+                        // Check if the file size exceeds 59MB
+                        alert(
+                            "The file size exceeds the 10GB limit. Please select a smaller file.",
+                        );
+                        fileUpload.value = ""; // Clear the selected file
+                        fileNameElement.textContent = ""; // Clear the file name display
+                    } else {
+                        uploadButton.classList.remove("w3-hide"); // Show upload button
+                        cancelButton.classList.add("w3-hide"); // Hide cancel button
+                    }
+                }
+            });
+
+            uploadButton.addEventListener("click", () => {
+                const file = fileUpload.files[0];
+                if (!file) return;
+
+                const formData = new FormData(uploadForm); // Create FormData from the form
+
+                xhr = new XMLHttpRequest();
+                xhr.open("POST", "/", true); // Send to the '/' route
+
+                xhr.upload.onprogress = function (e) {
+                    if (e.lengthComputable) {
+                        const percentComplete = (e.loaded / e.total) * 100;
+                        progressBar.style.width = percentComplete + "%";
+                        progressBar.textContent =
+                            percentComplete.toFixed(0) + "%"; // Update progress text
+                    }
+                };
+
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        console.log("File uploaded successfully!");
+                        const response = JSON.parse(xhr.responseText); // Parse the JSON response
+                        const fileUrl = response.file_url; // Extract the file URL
+                        modalBody.innerHTML = `
+                        <p>Your file has been uploaded. You can access it 
+                            <a href="${fileUrl}" target="_blank">here</a>.
+                        </p>
+                        <button class="copy-url-button w3-btn w3-blue" onclick="copyToClipboard('${fileUrl}')">Copy URL</button>
+                    `;
+                        modal.style.display = "block";
+                        progressBar.style.width = "0%";
+                        progressBar.textContent = "0%"; // Reset progress text
+                        errorMessageElement.style.display = "none";
+                        fileNameElement.textContent = ""; // Clear the file name display
+                        fileUpload.value = ""; // Clear the selected file
+                        uploadButton.classList.add("w3-hide"); // Hide upload button
+                        cancelButton.classList.add("w3-hide"); // Hide cancel button
+                    } else {
+                        console.error("Upload failed. Status: " + xhr.status);
+                        errorMessageElement.textContent =
+                            "Upload failed. Please try again later.";
+                        errorMessageElement.classList.add("show");
+                        progressBar.style.width = "0%";
+                        progressBar.textContent = "0%"; // Reset progress text
+                        uploadButton.classList.add("w3-hide"); // Hide upload button
+                        cancelButton.classList.add("w3-hide"); // Hide cancel button
+                    }
+                };
+
+                xhr.onerror = function () {
+                    console.error("Error occurred during upload.");
+                    errorMessageElement.textContent =
+                        "Error occurred during upload. Please check your network connection and try again.";
+                    errorMessageElement.classList.add("show");
+                    progressBar.style.width = "0%";
+                    progressBar.textContent = "0%"; // Reset progress text
+                    uploadButton.classList.add("w3-hide"); // Hide upload button
+                    cancelButton.classList.add("w3-hide"); // Hide cancel button
+                };
+
+                xhr.send(formData);
+
+                // Update UI for uploading state
+                uploadButton.classList.add("w3-hide"); // Hide upload button
+                cancelButton.classList.remove("w3-hide"); // Show cancel button
+                progressBar.style.width = "0%"; // Reset progress bar
+                progressBar.textContent = "0%"; // Reset progress text
+                errorMessageElement.classList.remove("show"); // Hide error message
+            });
+
+            cancelButton.addEventListener("click", () => {
+                if (xhr) xhr.abort(); // Cancel the upload if xhr exists
+                progressBar.style.width = "0%";
+                progressBar.textContent = "0%"; // Reset progress text
+                uploadButton.classList.remove("w3-hide"); // Show upload button
+                cancelButton.classList.add("w3-hide"); // Hide cancel button
+                fileUpload.value = ""; // Clear the selected file
+                fileNameElement.textContent = ""; // Clear the file name display
+            });
+
+            span.onclick = function () {
+                modal.style.display = "none";
+            };
+
+            window.onclick = function (event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            };
+
+            function copyToClipboard(text) {
+                const textarea = document.createElement("textarea");
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand("copy");
+                document.body.removeChild(textarea);
+                alert("URL copied to clipboard: " + text);
+            }
+        </script>
+    </body>
+</html>

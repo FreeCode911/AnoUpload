@@ -1,0 +1,21 @@
+v: 0
+micros:
+  - name: FileUploadV3-1
+    src: ./
+    engine: nodejs16
+    primary: true
+    run: node index.mjs
+    presets:
+      env:
+        - name: UPLOAD_FOLDER
+          description: Secret message only available to this Micr
+          default: "uploads"
+        - name: MAX_CONTENT_LENGTH
+          description: Secret message only available to this Mic
+          default: "10737418240"
+        - name: GITHUB_TOKEN
+          description: Secret message only available to this Mi
+          default: "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"
+        - name: GITHUB_REPO
+          description: Secret message only available to this Mi
+          default: "FreeCode911/file-uploadv2"
