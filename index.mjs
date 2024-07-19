@@ -128,7 +128,7 @@ app.use((req, res, next) => {
     res.status(404).sendFile(path.join(process.cwd(), 'public', '404.html'));
 });
 
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 49098;
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
