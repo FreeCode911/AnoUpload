@@ -447,10 +447,10 @@
                 const file = fileUpload.files[0];
                 if (file) {
                     fileNameElement.textContent = `Selected file: ${file.name}`;
-                    if (file.size > 10 * 1024 * 1024 * 1024) {
+                    if (file.size > 1 * 1024 * 1024 * 1024) {
                         // Check if the file size exceeds 59MB
                         alert(
-                            "The file size exceeds the 10GB limit. Please select a smaller file.",
+                            "The file size exceeds the 1GB limit. Please select a smaller file.",
                         );
                         fileUpload.value = ""; // Clear the selected file
                         fileNameElement.textContent = ""; // Clear the file name display
