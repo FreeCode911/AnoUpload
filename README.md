@@ -13,6 +13,8 @@ AnoUpload is a sleek and user-friendly file hosting service that allows you to u
 - **📩 Discord Notifications:** Get real-time notifications whenever a new file is uploaded.
 
 ## 🚀 Getting Started
+[![Run on Repl.it](https://repl.it/badge/github/FreeCode911/AnoUpload)](https://repl.it/github/FreeCode911/AnoUpload)
+
 - **▶️Tutorial** : https://youtu.be/ES_41VHT-t0
 1. **🍴 Fork this Repo:** Click the "Fork" button at the top right of this Repl.
 2. **⚙️ Set up Environment Variables:**
