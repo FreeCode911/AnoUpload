@@ -1,8 +1,12 @@
 {
-  "type": "module",
+  "name": "api-server",
+  "version": "1.1.0",
+  "description": "AnoUpload",
+  "main": "index.js",
+  "deploy": "npm i"
   "scripts": {
     "start": "node index.mjs",
-    "deploy": "npm i"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "@octokit/rest": "^21.0.1",
@@ -12,5 +16,9 @@
     "express": "^4.19.2",
     "multer": "^1.4.5-lts.1",
     "octokit": "^4.0.2"
-  }
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "author": "LegendYt4k",
 }
