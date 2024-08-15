@@ -28,4 +28,4 @@ AnoUpload is a sleek and user-friendly file hosting service that allows you to u
 
 ## 📜 License
 
-This project is licensed under the MIT License. For more details, see the `LICENSE` file.
+This project is licensed under the GPL-3.0 license. For more details, see the `LICENSE` file.
