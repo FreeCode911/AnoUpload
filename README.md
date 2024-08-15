@@ -13,7 +13,7 @@ AnoUpload is a sleek and user-friendly file hosting service that allows you to u
 - **📩 Discord Notifications:** Get real-time notifications whenever a new file is uploaded.
 
 ## 🚀 Getting Started
-- Tutorial : https://youtu.be/ES_41VHT-t0
+- **▶️Tutorial** : https://youtu.be/ES_41VHT-t0
 1. **🍴 Fork this Repo:** Click the "Fork" button at the top right of this Repl.
 2. **⚙️ Set up Environment Variables:**
    - Create a `.env` file in the root directory of your forked Repl.
