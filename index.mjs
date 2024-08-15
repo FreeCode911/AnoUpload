@@ -1,4 +1,3 @@
-
 import express from 'express';
 import multer from 'multer';
 import path from 'path';
@@ -6,6 +5,7 @@ import fs from 'fs';
 import { Octokit } from '@octokit/rest';
 import dotenv from 'dotenv';
 import crypto from 'crypto';
+import { sendDiscordNotification } from './discordWebhook.js'; // Import the function
 
 dotenv.config();
 
@@ -13,11 +13,10 @@ const app = express();
 const uploadFolder = process.env.UPLOAD_FOLDER;
 const maxContentLength = parseInt(process.env.MAX_CONTENT_LENGTH, 10);
 
-
 if (!fs.existsSync(uploadFolder)) {
     fs.mkdirSync(uploadFolder);
 }
-//zdz@VaqhqVRm88r
+
 const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
 const storage = multer.diskStorage({
@@ -44,12 +43,10 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(process.cwd(), 'public', 'upload.html'));
 });
 
-
 // Define a route to handle file listing
 app.get('/files', (req, res) => {
-    const folderPath = 'uploads'; // Path to your folder containing files
+    const folderPath = uploadFolder; // Path to your folder containing files
 
-    // Read the contents of the folder
     fs.readdir(folderPath, (err, files) => {
         if (err) {
             console.error('Error reading directory:', err);
@@ -57,10 +54,8 @@ app.get('/files', (req, res) => {
             return;
         }
 
-        // Create an array of file URLs
-        const fileUrls = files.map(file => `/files/${file}`);
+        const fileUrls = files.map(file => `/uploads/${file}`);
 
-        // Render the HTML page with the list of file URLs
         res.send(`
             <!DOCTYPE html>
             <html lang="en">
@@ -79,6 +74,7 @@ app.get('/files', (req, res) => {
         `);
     });
 });
+
 // Route for file upload
 app.post('/', upload.single('file'), async (req, res) => {
     if (!req.file) {
@@ -98,6 +94,9 @@ app.post('/', upload.single('file'), async (req, res) => {
         });
 
         const fileUrl = `https://lykfile.me/cn/${filename}`;
+
+        // Send notification to Discord
+        await sendDiscordNotification(filename, fileUrl);
 
         res.json({ file_url: fileUrl });
     } catch (error) {
@@ -132,7 +131,8 @@ const port = process.env.PORT || 49098;
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
-// Function to delete all files in uploads folder every 10 seconds
+
+// Function to delete all files in uploads folder every 30 minutes
 setInterval(() => {
     fs.readdir(uploadFolder, (err, files) => {
         if (err) {
@@ -150,4 +150,4 @@ setInterval(() => {
             });
         }
     });
-}, 1800000);
+}, 1800000); // 30 minutes in milliseconds
