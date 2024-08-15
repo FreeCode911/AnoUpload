@@ -28,6 +28,16 @@ AnoUpload is a sleek and user-friendly file hosting service that allows you to u
 3. **▶️ Run the AnoUpload:** `npm start`
 4. **🌐 Access the Website:** Open the link provided in the console output to access your AnoUpload instance.
 
+## Star History
+
+<a href="https://star-history.com/#FreeCode911/AnoUpload&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=FreeCode911/AnoUpload&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=FreeCode911/AnoUpload&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=FreeCode911/AnoUpload&type=Date" />
+ </picture>
+</a>
+
 ## 📜 License
 
 This project is licensed under the GPL-3.0 license. For more details, see the `LICENSE` file.
