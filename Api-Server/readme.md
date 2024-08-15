@@ -6,7 +6,6 @@ This API Only AnoUpload No GUI
 
 - **📤 File Upload:** Easily upload files to the server.
 - **📂 File Listing:** View all files that have been uploaded.
-- **🗑️ File Deletion:** Delete specific files from the server with ease.
 - **🔗 GitHub Integration:** Automatically upload files to your GitHub repository.
 - **📣 Discord Notifications:** Receive instant notifications in a Discord channel whenever a new file is uploaded.
 
