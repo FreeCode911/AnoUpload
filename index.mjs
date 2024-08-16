@@ -1,3 +1,4 @@
+// index.mjs
 import express from 'express';
 import multer from 'multer';
 import path from 'path';
@@ -5,7 +6,7 @@ import fs from 'fs';
 import { Octokit } from '@octokit/rest';
 import dotenv from 'dotenv';
 import crypto from 'crypto';
-import { sendDiscordNotification } from './discordWebhook.js'; // Import the function
+import sendDiscordNotification from './discordWebhook.js'; // Import the module
 
 dotenv.config();
 
@@ -151,7 +152,7 @@ app.post('/', upload.single('file'), async (req, res) => {
         const fileUrl = `${websiteUrl}cn/${filename}`;
 
         // Send notification to Discord
-        await sendDiscordNotification(filename, fileUrl);
+        await sendDiscordNotification(filename, fileUrl); // Use the imported function
 
         res.json({ file_url: fileUrl });
     } catch (error) {
