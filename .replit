@@ -1,18 +1,18 @@
-entrypoint = "index.mjs"
-modules = ["nodejs-20", "python-3.10"]
+modules = ["web", "nodejs-20"]
 hidden = [".config", "package-lock.json"]
+run = "node index.mjs"
 
 [gitHubImport]
 requiredFiles = [".replit", "replit.nix", "package.json", "package-lock.json"]
 
 [nix]
-channel = "stable-23_05"
+channel = "stable-24_05"
 
 [unitTest]
 language = "nodejs"
 
 [deployment]
-run = ["node", "index.mjs"]
+run = ["sh", "-c", "node index.mjs"]
 deploymentTarget = "cloudrun"
 ignorePorts = false
 
@@ -23,3 +23,7 @@ externalPort = 3000
 [[ports]]
 localPort = 5000
 externalPort = 80
+
+[[ports]]
+localPort = 8080
+externalPort = 8080

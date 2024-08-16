@@ -200,7 +200,7 @@ app.listen(port, () => {
 \x1b[32m================================\x1b[0m
 \x1b[32m     AnoUpload Starting\x1b[0m
 \x1b[32m================================\x1b[0m
-\x1b[32mVersion v1.1\x1b[0m
+\x1b[32mVersion v1.2\x1b[0m
 \x1b[32mWebsite: https://lykcloud.me\x1b[0m
 \x1b[32m=========================\x1b[0m
 `);

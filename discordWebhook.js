@@ -1,11 +1,10 @@
-// discordWebhook.js
 import axios from 'axios';
 import dayjs from 'dayjs';
 
-const webhookUrl = 'Discord webhook URL'; // Discord webhook URL
+const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
 
 // Function to send message to Discord
-export const sendDiscordNotification = async (fileName, fileUrl) => {
+const sendDiscordNotification = async (fileName, fileUrl) => {
     if (!webhookUrl) {
         console.error('Discord webhook URL not set in environment variables');
         return;
@@ -28,3 +27,5 @@ export const sendDiscordNotification = async (fileName, fileUrl) => {
         console.error('Error sending notification to Discord:', error);
     }
 };
+
+export default sendDiscordNotification;  // Use a default export
