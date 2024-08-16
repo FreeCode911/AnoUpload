@@ -202,9 +202,12 @@ app.listen(port, () => {
 \x1b[32m================================\x1b[0m
 \x1b[32mVersion v1.2\x1b[0m
 \x1b[32mWebsite: https://lykcloud.me\x1b[0m
-\x1b[32m=========================\x1b[0m
+\x1b[32mDiscord: https://lykcloud.me\x1b[0m
+\x1b[32m================================\x1b[0m
+\x1b[32mAnoUploader By LegendYt4k\x1b[0m
+\x1b[32m================================\x1b[0m
 `);
-    console.log(`\x1b[32mAnoUpload is running on ${websiteUrl}:${port}\x1b[0m`);
+    console.log(`\x1b[32mAnoUpload is running on Port :${port}\x1b[0m`);
 });
 
 // Function to delete all files in uploads folder every 30 minutes
