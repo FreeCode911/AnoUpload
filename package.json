@@ -1,26 +1,44 @@
 {
-  "name": "AnoUpload",
-  "version": "1.1.0",
+  "name": "anoupload",
+  "version": "1.5.0",
   "description": "AnoUpload",
-  "type": "module",
-  "main": "index.mjs",
+  "main": "index.js",
   "scripts": {
-    "start": "node index.mjs",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "deploy": "npm i"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [
+    "github",
+    "cloud",
+    "storage",
+    "upload",
+    "free",
+    "file-uploader",
+    "githubcloud",
+    "anoupload"
+  ],
+  "files": [
+    "index.js",
+    "discordWebhook.js",
+    "public/"
+  ],
+  "author": "LegendYt4k",
+  "license": "GPL-3.0",
   "dependencies": {
-    "@octokit/rest": "^21.0.1",
-    "axios": "^1.7.2",
+    "@octokit/rest": "^21.0.2",
+    "@types/node": "^18.0.6",
+    "anoupload": "^1.4.0",
+    "axios": "^1.7.4",
     "dayjs": "^1.11.12",
     "dotenv": "^16.4.5",
-    "ejs": "^3.1.10",
     "express": "^4.19.2",
-    "multer": "^1.4.5-lts.1",
-    "octokit": "^4.0.2"
+    "multer": "^1.4.5-lts.1"
   },
-  "engines": {
-    "node": ">=18.0.0"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FreeCode911/AnoUpload.git"
   },
-  "author": "LegendYt4k"
+  "bugs": {
+    "url": "https://github.com/FreeCode911/AnoUpload/issues"
+  },
+  "homepage": "https://github.com/FreeCode911/AnoUpload#readme"
 }
