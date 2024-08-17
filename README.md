@@ -28,6 +28,33 @@ AnoUpload is a sleek and user-friendly file hosting service that allows you to u
 3. **▶️ Run the AnoUpload:** `npm start`
 4. **🌐 Access the Website:** Open the link provided in the console output to access your AnoUpload instance.
 
+## NPM Package 
+**AnoUploader** is a straightforward NPM package for anonymous file uploads. 
+
+## Installation
+
+To install the package, run:
+
+```bash
+npm install anoupload
+```
+
+## Usage
+
+1. **Require the package** in your Node.js file:
+
+   ```javascript
+   const AnoUploader = require('anoupload');
+   ```
+
+2. **Run your script**:
+
+   Simply execute your `index.js` file or any other file where you've required `anoupload`. The package will start working automatically.
+
+## Documentation
+
+For more details, visit the [AnoUploader NPM page](https://www.npmjs.com/package/anoupload).
+
 ## Star History
 
 <a href="https://star-history.com/#FreeCode911/AnoUpload&Date">
