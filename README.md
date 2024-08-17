@@ -52,9 +52,6 @@ npm install anoupload
 
    Simply execute your `index.js` file or any other file where you've required `anoupload`. The package will start working automatically.
 
-## Documentation
-
-For more details, visit the [AnoUploader NPM page](https://www.npmjs.com/package/anoupload).
 
 ## Star History
 
