@@ -25,6 +25,7 @@ AnoUpload is a sleek and user-friendly file hosting service that allows you to u
      - `GITHUB_TOKEN`: A GitHub personal access token with the `repo` scope. Generate one [here](https://github.com/settings/tokens).
      - `GITHUB_REPO`: Your GitHub repository name in the format `owner/repo` (e.g., `FreeCode911/AnoUpload`).
      - `WEBSITE_URL`: The URL of your deployed Repl (e.g., `https://your-name.com`).
+     - `DISCORD_WEBHOOK_URL`: The URL of your discord server channel webhook for notification if you donot need just leave it like `DISCORD_WEBHOOK_URL=none`
 3. **▶️ Run the AnoUpload:** `npm start`
 4. **🌐 Access the Website:** Open the link provided in the console output to access your AnoUpload instance.
 
