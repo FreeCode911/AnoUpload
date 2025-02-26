@@ -102,7 +102,7 @@ Missing or incorrect environment variables:`);
 	app.use(express.static(path.join(__dirname, 'public')));
 
 		app.get('/', (req, res) => {
-				res.sendFile(path.join(__dirname, 'public', 'upload.html'), (err) => {
+				res.sendFile(path.join(__dirname, 'public', 'index.html'), (err) => {
 						if (err) {
 								console.error(`Error sending upload form: ${err.message}`);
 								res.status(500).send('Error loading upload form.');
