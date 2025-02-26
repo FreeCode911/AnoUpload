@@ -15,8 +15,9 @@ const maxContentLength = parseInt(process.env.MAX_CONTENT_LENGTH, 10);
 const githubToken = process.env.GITHUB_TOKEN;
 const githubRepo = process.env.GITHUB_REPO;
 const websiteUrl = process.env.WEBSITE_URL || 'http://localhost';
+const discordWebhookUrl = process.env.DISCORD_WEBHOOK_URL;
 
-if (!uploadFolder || isNaN(maxContentLength) || !githubToken || !githubRepo || !websiteUrl) {
+if (!uploadFolder || isNaN(maxContentLength) || !githubToken || !githubRepo || !websiteUrl || !discordWebhookUrl) {
     console.error(`Missing or incorrect environment variables.`);
     process.exit(1);
 }
