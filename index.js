@@ -222,7 +222,8 @@ Missing or incorrect environment variables:`);
 				if (webh) await sendDiscordNotification(filename, fileUrl);
 			}
 
-			res.json({ file_url: fileUrl });
+			// Default behaviour: return file URL and filename. Client can request scheduling separately.
+			res.json({ file_url: fileUrl, filename: f.filename });
 		} catch (error) {
 			console.error('Error uploading file or sending Discord notification:', error && error.message ? error.message : error);
 			res.status(500).send('Error uploading file');
@@ -259,7 +260,8 @@ Missing or incorrect environment variables:`);
 
 				const fileUrl = `${websiteUrl.replace(/\/$/, '')}/uploads/${encodeURIComponent(uniqueFilename)}`;
 				if(webh) await sendDiscordNotification(uniqueFilename, fileUrl);
-				return res.json({ file_url: fileUrl });
+				// return filename so the client can schedule deletion if desired
+				return res.json({ file_url: fileUrl, filename: uniqueFilename });
 			}
 
 			// not finished yet
@@ -271,15 +273,42 @@ Missing or incorrect environment variables:`);
 	});
 
 		app.get('/uploads/:filename', (req, res) => {
-				const { filename } = req.params;
-				// Ensure we send an absolute path to res.sendFile to avoid the "path must be absolute" error
-				const filePath = path.isAbsolute(uploadFolder) ? path.join(uploadFolder, filename) : path.resolve(uploadFolder, filename);
-				res.sendFile(filePath, (err) => {
-						if (err) {
-								console.error(`Error sending file ${filename}: ${err.message}`);
-								res.status(404).send('File not found.');
-						}
-				});
+			const { filename } = req.params;
+			// Ensure we send an absolute path to res.sendFile to avoid the "path must be absolute" error
+			const filePath = path.isAbsolute(uploadFolder) ? path.join(uploadFolder, filename) : path.resolve(uploadFolder, filename);
+			res.sendFile(filePath, (err) => {
+				if (err) {
+					console.error(`Error sending file ${filename}: ${err.message}`);
+					res.status(404).send('File not found.');
+				}
+			});
+		});
+
+		// UI: schedule a deletion for a file (hours from now). Body: { filename, hours }
+		app.post('/schedule-delete', express.json(), (req, res) => {
+			const { filename, hours } = req.body || {};
+			if(!filename) return res.status(400).json({ error: 'filename required' });
+			const ok = scheduleDeletion(filename, hours || 24);
+			if(!ok) return res.status(400).json({ error: 'Could not schedule deletion (file missing or unsupported storage mode)' });
+			return res.json({ ok: true, filename });
+		});
+
+		// UI: list scheduled deletions
+		app.get('/scheduled', (req, res) => {
+			const lifetimes = loadLifetimes();
+			const list = Object.entries(lifetimes).map(([filename, expiresAt]) => ({ filename, expiresAt, expiresAtISO: new Date(Number(expiresAt)).toISOString() }));
+			res.json({ scheduled: list });
+		});
+
+		// UI: cancel scheduled deletion for a filename
+		app.post('/cancel-delete', express.json(), (req, res) => {
+			const { filename } = req.body || {};
+			if(!filename) return res.status(400).json({ error: 'filename required' });
+			const lifetimes = loadLifetimes();
+			if(!lifetimes[filename]) return res.status(404).json({ error: 'Not scheduled' });
+			delete lifetimes[filename];
+			saveLifetimes(lifetimes);
+			return res.json({ ok: true, filename });
 		});
 
 		app.get('/file_uploaded', (req, res) => {
@@ -318,24 +347,69 @@ Missing or incorrect environment variables:`);
 				console.log(`\x1b[32mAnoUpload is running on Port :${port}\x1b[0m`);
 		});
 
-		setInterval(() => {
-				fs.readdir(uploadFolder, (err, files) => {
-						if (err) {
-								console.error('Error reading upload folder:', err.message);
-								return;
-						}
+	// Lifetime scheduling helpers
+	const lifetimesFile = path.join(uploadFolder, 'lifetimes.json');
 
-						for (const file of files) {
-								fs.unlink(path.join(uploadFolder, file), err => {
-										if (err) {
-												console.error(`Error deleting file ${file}:`, err.message);
-												return;
-										}
-										console.log(`Deleted ${file}`);
-								});
+	function loadLifetimes(){
+		try{
+			if(!fs.existsSync(lifetimesFile)) return {};
+			const raw = fs.readFileSync(lifetimesFile, 'utf8');
+			return JSON.parse(raw || '{}');
+		}catch(e){
+			console.error('Could not load lifetimes file:', e && e.message);
+			return {};
+		}
+	}
+
+	function saveLifetimes(obj){
+		try{
+			fs.writeFileSync(lifetimesFile, JSON.stringify(obj, null, 2));
+		}catch(e){
+			console.error('Could not save lifetimes file:', e && e.message);
+		}
+	}
+
+	function scheduleDeletion(filename, hours){
+		if(useGithub){
+			// Scheduling deletion for GitHub-backed files isn't supported in this simple implementation
+			return false;
+		}
+		const abs = path.join(uploadFolder, filename);
+		if(!fs.existsSync(abs)) return false;
+		const lifetimes = loadLifetimes();
+		const expiresAt = Date.now() + (Number(hours) || 24) * 3600 * 1000;
+		lifetimes[filename] = expiresAt;
+		saveLifetimes(lifetimes);
+		return true;
+	}
+
+	// Sweeper: run every 20s and remove expired files listed in lifetimes.json
+	setInterval(() => {
+		try{
+			const lifetimes = loadLifetimes();
+			const now = Date.now();
+			let changed = false;
+			for(const [filename, expiresAt] of Object.entries(lifetimes)){
+				if(!expiresAt) continue;
+				if(now >= Number(expiresAt)){
+					const target = path.join(uploadFolder, filename);
+					try{
+						if(fs.existsSync(target)){
+							fs.unlinkSync(target);
+							console.log(`Auto-deleted expired file: ${filename}`);
+						} else {
+							console.log(`Expired file not found for deletion: ${filename}`);
 						}
-				});
-		}, 1800000); // 30 minutes in milliseconds
+					}catch(e){ console.error(`Error deleting expired file ${filename}:`, e && e.message); }
+					delete lifetimes[filename];
+					changed = true;
+				}
+			}
+			if(changed) saveLifetimes(lifetimes);
+		}catch(e){
+			console.error('Error in lifetimes sweeper:', e && e.message);
+		}
+	}, 20 * 1000);
 
 		// Error handler to catch multer file size limit and respond with 413 and JSON
 		app.use((err, req, res, next) => {

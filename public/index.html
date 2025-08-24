@@ -54,6 +54,12 @@
             .btn{ -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
             .meta{color:var(--muted);font-size:13px}
             .side{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:10px;padding:18px}
+            /* section title styling inside the side panel */
+            .section-title{display:flex;align-items:center;gap:8px;font-weight:700}
+            .section-title .badge{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+            .history-title .badge{background:linear-gradient(180deg,var(--accent-2),var(--accent))}
+            .scheduled-title .badge{background:linear-gradient(180deg,#34d399,#10b981)}
+            .section-title .label{font-weight:700}
             .progress{height:12px;background:rgba(255,255,255,0.03);border-radius:8px;overflow:hidden;margin-top:12px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.02)}
             .progress > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width .28s cubic-bezier(.2,.9,.2,1);box-shadow:0 6px 18px rgba(109,40,217,0.12)}
             .url{word-break:break-all;background:rgba(255,255,255,0.02);padding:10px;border-radius:8px;margin-top:12px;color:var(--accent);display:flex;gap:8px;align-items:center;justify-content:space-between}
@@ -68,6 +74,13 @@
             #history-list::-webkit-scrollbar-track{background:transparent;border-radius:10px}
             #history-list::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--accent),#8b5cf6);border-radius:10px;border:2px solid rgba(0,0,0,0.15)}
             #history-list::-webkit-scrollbar-thumb:hover{filter:brightness(.95)}
+            /* Uploaded links list: keep contained like history */
+            #url-list{margin-top:8px;max-height:180px;overflow:auto;padding-right:6px; -webkit-overflow-scrolling: touch;}
+            #url-list{scrollbar-width:thin; scrollbar-color: var(--accent) rgba(255,255,255,0.02);}
+            #url-list::-webkit-scrollbar{width:10px;height:10px}
+            #url-list::-webkit-scrollbar-track{background:transparent;border-radius:10px}
+            #url-list::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--accent),#8b5cf6);border-radius:10px;border:2px solid rgba(0,0,0,0.15)}
+            #url-list::-webkit-scrollbar-thumb:hover{filter:brightness(.95)}
             footer{margin-top:16px;text-align:center;color:var(--muted);font-size:13px}
             .toast{position:fixed;right:20px;top:20px;z-index:9999;background:linear-gradient(180deg,#120722,#0b0614);padding:12px 18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 18px 48px rgba(109,40,217,0.14);opacity:0;transform:translateY(-12px);transition:opacity .28s,transform .28s,box-shadow .28s;backdrop-filter: blur(6px);color:#fff}
             .toast.show{display:block;opacity:1;transform:translateY(0)}
@@ -80,6 +93,11 @@
             input[type=file]{display:none}
             .history-item{transition:transform .18s,box-shadow .18s,background .18s}
             .history-item:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(109,40,217,0.08);background:linear-gradient(180deg, rgba(155,92,246,0.03), rgba(109,40,217,0.02))}
+            /* visual accent for each history item */
+            .history-item{border-left:4px solid rgba(155,92,246,0.12);padding-left:10px}
+            /* scheduled-list items visual style */
+            #scheduled-list > div{border-left:4px solid rgba(52,211,153,0.08);padding-left:10px;margin-bottom:6px;padding:8px;border-radius:8px}
+            #scheduled-list .cancel-sched{background:#2d6a4f;color:#eafff0;border:none}
         </style>
     </head>
     <body>
@@ -129,7 +147,8 @@
 
                     <div id="error" class="small" style="color:var(--danger);margin-top:8px;display:none"></div>
                     <div id="file-url" style="display:none">
-                        <div class="url" id="url-box"></div>
+                        <!-- list of recently uploaded links; each item uses the .url style -->
+                        <div id="url-list" style="display:flex;flex-direction:column;gap:8px"></div>
                     </div>
                 </div>
 
@@ -147,11 +166,18 @@
                         </div>
                         <div id="history-list" style="margin-top:8px;max-height:220px;overflow:auto"></div>
                     </div>
-                    <div style="margin-top:10px" class="small muted">&copy; 2024 AnoUpload</div>
+                    <div style="margin-top:12px">
+                        <div style="display:flex;justify-content:space-between;align-items:center">
+                            <div style="font-weight:700">Scheduled deletions</div>
+                            <button id="refresh-scheduled" class="btn ghost small" style="font-size:12px;padding:6px 8px">Refresh</button>
+                        </div>
+                        <div id="scheduled-list" style="margin-top:8px;max-height:140px;overflow:auto" class="small muted">No scheduled deletions</div>
+                    </div>
                 </aside>
             </div>
 
             <footer>
+                <div style="margin-top:10px" class="small muted">&copy; 2024 AnoUpload</div>
                 <small class="muted">Open-source • <a href="https://github.com/FreeCode911/AnoUpload" target="_blank" style="color:var(--accent)">Fork on GitHub</a></small>
             </footer>
         </div>
@@ -166,7 +192,7 @@
             const selected = document.getElementById('selected');
             const progressBar = document.getElementById('progress-bar');
             const errorEl = document.getElementById('error');
-            const urlBox = document.getElementById('url-box');
+            const urlList = document.getElementById('url-list');
             const fileUrlWrap = document.getElementById('file-url');
             const copyBtn = document.getElementById('copy-btn');
             const toast = document.getElementById('toast');
@@ -181,6 +207,7 @@
             let serverMax = null;
             let serverMode = null;
             let lastPreviewUrl = null;
+            let lastUploadedUrl = null; // stores most recently uploaded URL for the top copy button
             const DEFAULT_MAX = 1 * 1024 * 1024 * 1024; // fallback 1GB
             const CHUNK_SIZE = 8 * 1024 * 1024; // 8 MB chunks for upload-chunk
 
@@ -361,10 +388,11 @@
                                 }
 
                                 const j = await resp.json().catch(()=>null);
-                                if(idx+1 >= total && j && j.file_url){
-                                    urlBox.innerHTML = `<div style="flex:1">${j.file_url}</div>`;
-                                    fileUrlWrap.style.display='block'; copyBtn.style.display='block'; addHistoryEntry(j.file_url);
-                                }
+                                                        if(idx+1 >= total && j && j.file_url){
+                                                            // append the finished file URL as its own item
+                                                            addUrlItem(j.file_url, j.filename);
+                                                            addHistoryEntry(j.file_url);
+                                                        }
 
                                 uploadedBytes += blob.size;
                                 updateProgress();
@@ -388,7 +416,11 @@
                             }
                             const j = await resp.json().catch(()=>null);
                             const links = j && (j.file_urls || (j.file_url ? [j.file_url] : [])) || [];
-                            if(links.length){ urlBox.innerHTML = links.map(l=>`<div style="flex:1">${l}</div>`).join(''); fileUrlWrap.style.display='block'; copyBtn.style.display='block'; links.forEach(l=>addHistoryEntry(l)); }
+                            if(links.length){
+                                // append each returned link as a separate item
+                                links.forEach(l=>{ addUrlItem(l, j.filename); addHistoryEntry(l); });
+                                fileUrlWrap.style.display='block'; copyBtn.style.display='block';
+                            }
                             uploadedBytes += file.size; updateProgress();
                         }
 
@@ -425,10 +457,135 @@
             cancelBtn.addEventListener('click', ()=>{ cancelRequested = true; if(currentXhr) currentXhr.abort(); currentXhr=null; progressBar.style.width='0%'; uploadBtn.disabled=false; cancelBtn.style.display='none'; setSelected(null); fileInput.value=''; document.getElementById('upload-status').textContent = 'Upload cancelled'; showToast('Upload cancelled','info'); });
 
             copyBtn.addEventListener('click', ()=>{
-                const text = urlBox.textContent.trim();
+                const text = lastUploadedUrl || (urlList.firstChild && urlList.firstChild.firstChild && urlList.firstChild.firstChild.textContent) || '';
                 if(!text) return;
                 if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(()=>showToast('Link copied','success')) } else { const t = document.createElement('textarea'); t.value = text; document.body.appendChild(t); t.select(); document.execCommand('copy'); document.body.removeChild(t); showToast('Link copied','success'); }
             });
+
+            const scheduledListEl = document.getElementById('scheduled-list');
+            const refreshScheduledBtn = document.getElementById('refresh-scheduled');
+
+            function createScheduleButton(filename){
+                const btn = document.createElement('button');
+                btn.className = 'btn ghost small';
+                btn.textContent = 'Auto-delete 24h';
+                btn.addEventListener('click', async ()=>{
+                    try{
+                        const r = await fetch('/schedule-delete', { method: 'POST', headers: {'content-type':'application/json'}, body: JSON.stringify({ filename, hours: 24 }) });
+                        const j = await r.json().catch(()=>null);
+                        if(r.ok){ showToast('Scheduled deletion in 24h','success'); refreshScheduled(); btn.remove(); } else { showToast(j && j.error ? j.error : 'Could not schedule','error'); }
+                    }catch(e){ showToast('Could not schedule','error'); }
+                });
+                return btn;
+            }
+
+            // helper: create a url-list item (shows link text, copy/open buttons and schedule control)
+            function addUrlItem(url, filename){
+                try{
+                    const item = document.createElement('div');
+                    item.className = 'url';
+                    item.style.display = 'flex';
+                    item.style.alignItems = 'center';
+                    item.style.justifyContent = 'space-between';
+
+                    const left = document.createElement('div');
+                    left.style.flex = '1';
+                    left.style.wordBreak = 'break-all';
+                    // show the file name as the primary label and the url as a muted subline
+                    const displayName = filename || (()=>{ try{ const uu = new URL(url); const parts = uu.pathname.split('/').filter(Boolean); return parts.length ? decodeURIComponent(parts[parts.length-1]) : url }catch(e){ return url } })();
+                    const nameDiv = document.createElement('div');
+                    nameDiv.textContent = displayName;
+                    nameDiv.style.fontWeight = '600';
+                    nameDiv.style.fontSize = '13px';
+                    const urlDiv = document.createElement('div');
+                    urlDiv.textContent = url;
+                    urlDiv.style.color = 'var(--muted)';
+                    urlDiv.style.fontSize = '11px';
+                    urlDiv.style.marginTop = '6px';
+                    left.appendChild(nameDiv);
+                    left.appendChild(urlDiv);
+
+                    const right = document.createElement('div');
+                    right.style.display = 'flex';
+                    right.style.gap = '8px';
+                    right.style.marginLeft = '8px';
+
+                    const copy = document.createElement('button');
+                    copy.className = 'btn small';
+                    copy.textContent = 'Copy';
+                    // copy should copy the actual URL, not the displayed name
+                    copy.addEventListener('click', ()=>{
+                        if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(url).then(()=>showToast('Link copied','success')) } else { const t = document.createElement('textarea'); t.value = url; document.body.appendChild(t); t.select(); document.execCommand('copy'); document.body.removeChild(t); showToast('Link copied','success'); }
+                    });
+
+                    const open = document.createElement('a');
+                    open.className = 'btn ghost small';
+                    open.textContent = 'Open';
+                    open.href = url;
+                    open.target = '_blank';
+
+                    right.appendChild(copy);
+                    right.appendChild(open);
+
+                    item.appendChild(left);
+                    item.appendChild(right);
+
+                    // attach schedule control to the left (text area) using filename if available
+                    if(filename) attachScheduleControl(left, filename);
+                    else {
+                        // try to infer filename from URL path
+                        try{ const u = new URL(url); const parts = u.pathname.split('/').filter(Boolean); const fn = parts.length ? decodeURIComponent(parts[parts.length-1]) : null; if(fn) attachScheduleControl(left, fn); }catch(e){}
+                    }
+
+                    urlList.insertBefore(item, urlList.firstChild);
+                    fileUrlWrap.style.display = 'block';
+                    copyBtn.style.display = 'block';
+                    lastUploadedUrl = url;
+                }catch(e){ console.error(e); }
+            }
+
+            async function refreshScheduled(){
+                try{
+                    const r = await fetch('/scheduled');
+                    if(!r.ok) throw new Error('Could not fetch scheduled');
+                    const j = await r.json();
+                    const items = j && j.scheduled ? j.scheduled : [];
+                    if(!items.length){ scheduledListEl.innerHTML = '<div class="small muted">No scheduled deletions</div>'; return; }
+                    scheduledListEl.innerHTML = items.map(it=>{
+                        return `<div style="display:flex;justify-content:space-between;align-items:center;padding:6px;border-radius:8px;background:rgba(255,255,255,0.01);margin-bottom:6px">
+                            <div style="flex:1;word-break:break-all">${it.filename}<div style="color:var(--muted);font-size:11px;margin-top:6px">Expires: ${it.expiresAtISO}</div></div>
+                            <div style="display:flex;flex-direction:column;gap:6px;margin-left:8px">
+                                <button class="btn small cancel-sched" data-fn="${it.filename}">Cancel</button>
+                            </div>
+                        </div>`
+                    }).join('');
+
+                    Array.from(scheduledListEl.querySelectorAll('.cancel-sched')).forEach(b=>{
+                        b.addEventListener('click', async ()=>{
+                            const fn = b.getAttribute('data-fn');
+                            try{
+                                const r = await fetch('/cancel-delete', { method: 'POST', headers: {'content-type':'application/json'}, body: JSON.stringify({ filename: fn }) });
+                                const j = await r.json();
+                                if(r.ok) { showToast('Cancelled', 'info'); refreshScheduled(); } else { showToast(j && j.error ? j.error : 'Could not cancel','error'); }
+                            }catch(e){ showToast('Could not cancel','error'); }
+                        });
+                    });
+                }catch(e){ scheduledListEl.innerHTML = '<div class="small muted">Could not load scheduled list</div>'; }
+            }
+
+            refreshScheduledBtn.addEventListener('click', ()=>refreshScheduled());
+
+            // When a file is uploaded and we have a filename, show schedule button
+            // Attach a schedule button next to a rendered urlBox or history entry
+            function attachScheduleControl(containerEl, filename){
+                try{
+                    const existing = containerEl.querySelector('.schedule-control');
+                    if(existing) existing.remove();
+                }catch(e){}
+                const wrap = document.createElement('div'); wrap.className='schedule-control'; wrap.style.marginLeft='8px';
+                wrap.appendChild(createScheduleButton(filename));
+                containerEl.appendChild(wrap);
+            }
 
             // Upload history (localStorage)
             const HISTORY_KEY = 'anoupload.history.v1';
@@ -455,8 +612,14 @@
                 const items = loadHistory();
                 historyListEl.innerHTML = items.length? items.map(it=>{
                     const t = new Date(it.at); const time = t.toLocaleString();
+                    // try to infer filename for display
+                    let displayName = it.url;
+                    try{ const u = new URL(it.url); const parts = u.pathname.split('/').filter(Boolean); displayName = parts.length ? decodeURIComponent(parts[parts.length-1]) : it.url }catch(e){}
                     return `<div class="history-item" style="padding:8px;border-radius:8px;background:rgba(255,255,255,0.01);margin-bottom:8px;display:flex;gap:8px;align-items:center">
-                        <div style="flex:1;font-size:13px;word-break:break-all">${it.url}<div style="color:var(--muted);font-size:11px;margin-top:4px">${time}</div></div>
+                        <div style="flex:1;font-size:13px;word-break:break-all">
+                            <div style="font-weight:600;font-size:13px">${displayName}</div>
+                            <div style="color:var(--muted);font-size:11px;margin-top:4px">${it.url}<div style="color:var(--muted);font-size:11px;margin-top:6px">${time}</div></div>
+                        </div>
                         <div style="display:flex;flex-direction:column;gap:6px">
                             <button class="btn small copy-history" data-url="${it.url}">Copy</button>
                             <a class="btn ghost small" href="${it.url}" target="_blank">Open</a>
@@ -464,12 +627,26 @@
                     </div>`
                 }).join('') : '<div class="small muted">No uploads yet</div>';
 
-                // wire copy buttons
-                Array.from(historyListEl.querySelectorAll('.copy-history')).forEach(b=>{
-                    b.addEventListener('click', ()=>{
-                        const u = b.getAttribute('data-url');
-                        if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(u).then(()=>showToast('Link copied','success')) } else { const t = document.createElement('textarea'); t.value = u; document.body.appendChild(t); t.select(); document.execCommand('copy'); document.body.removeChild(t); showToast('Link copied','success'); }
-                    });
+                // wire copy buttons and attach schedule controls to each history item
+                Array.from(historyListEl.querySelectorAll('.history-item')).forEach(el=>{
+                    const copyBtn = el.querySelector('.copy-history');
+                    if(copyBtn){
+                        copyBtn.addEventListener('click', ()=>{
+                            const u = copyBtn.getAttribute('data-url');
+                            if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(u).then(()=>showToast('Link copied','success')) } else { const t = document.createElement('textarea'); t.value = u; document.body.appendChild(t); t.select(); document.execCommand('copy'); document.body.removeChild(t); showToast('Link copied','success'); }
+                        });
+                    }
+                    const urlEl = el.querySelector('div[style*="word-break:break-all"]');
+                    if(urlEl){
+                        // extract url text and schedule by filename (last path component)
+                        const urlText = urlEl.firstChild && urlEl.firstChild.textContent ? urlEl.firstChild.textContent : urlEl.textContent || '';
+                        try{
+                            const u = new URL(urlText.trim());
+                            const parts = u.pathname.split('/').filter(Boolean);
+                            const filename = parts.length ? decodeURIComponent(parts[parts.length-1]) : null;
+                            if(filename) attachScheduleControl(urlEl, filename);
+                        }catch(e){}
+                    }
                 });
             }
 
