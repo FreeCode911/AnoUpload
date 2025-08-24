@@ -1,567 +1,497 @@
 <!doctype html>
 <html lang="en">
     <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta
-            name="description"
-            content="AnoUpload - Free, Anonymous, and Unlimited File Hosting. Upload files up to 10GBMB with ease!"
-        />
-        <meta
-            name="keywords"
-            content="file hosting, free file upload, anonymous file hosting, unlimited file upload, secure file sharing, file sharing service, upload documents, upload photos, upload files online, file upload site, file storage"
-        />
-        <meta name="author" content="LykCloud Team" />
-        <title>AnoUpload - Free, Anonymous, and Unlimited File Hosting</title>
-        <link rel="icon" href="file/favicon.ico" type="image/x-icon" />
-        <link rel="shortcut icon" href="file/favicon.ico" type="image/x-icon" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
-        <link
-            rel="stylesheet"
-            href="https://www.w3schools.com/w3css/4/w3.css"
-        />
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <meta name="description" content="AnoUpload - Fast, anonymous file uploads" />
+        <title>AnoUpload — Upload Files</title>
+        <link rel="icon" href="/file/favicon.ico" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
         <style>
-            body {
-                font-family: "Courier New", Courier, monospace;
-                background-color: #1a1a1a;
-                color: #c5c8c6;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 100vh;
-                margin: 0;
-                transition: background-color 0.5s ease;
+            :root{
+                --bg:#0b0716;
+                --card:#120722;
+                --accent:#9b5cf6; /* purple accent */
+                --accent-2:#6d28d9;
+                --muted:#b9a7d9;
+                --danger:#ff6b6b;
+                --glass: rgba(255,255,255,0.03);
+                --glow: rgba(155,92,246,0.14);
             }
-
-            .upload-container {
-                background-color: #252525;
-                padding: 40px;
-                border-radius: 8px;
-                box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-                max-width: 400px;
-                width: 100%;
-                text-align: center;
-                transition: transform 0.2s ease;
+            *{box-sizing:border-box}
+            html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,'Helvetica Neue',Arial}
+            body{background:linear-gradient(180deg,#071124 0%, #0f1720 100%);color:#e6eef8;display:flex;align-items:center;justify-content:center;padding:32px}
+            .container{width:100%;max-width:920px}
+            .header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+            .brand{display:flex;gap:12px;align-items:center}
+            .brand img{height:44px;border-radius:8px}
+            .brand h1{font-size:18px;margin:0;font-weight:600}
+            .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:14px;padding:28px;box-shadow:0 10px 30px rgba(2,6,23,0.7);display:grid;grid-template-columns:1fr 360px;gap:22px;align-items:start}
+            @media (max-width:900px){.card{grid-template-columns:1fr;}}
+            @media (max-width:520px){
+                .container{padding:16px}
+                .brand h1{font-size:16px}
+                .card{padding:18px;gap:12px}
+                .dropzone{padding:18px;min-height:180px}
+                .actions{flex-direction:column;align-items:stretch}
+                .btn{width:100%;padding:12px 14px;font-size:15px;border-radius:10px}
+                .btn.ghost{padding:10px}
+                .side{padding:14px}
+                .url{flex-direction:column;align-items:flex-start}
+                #history-list{max-height:160px}
             }
-
-            .upload-container:hover {
-                transform: translateY(-5px);
-            }
-
-            h1 {
-                color: #8abeb7;
-                font-size: 28px;
-                margin-bottom: 20px;
-                text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-            }
-
-            input[type="file"] {
-                display: none;
-            }
-
-            .custom-file-upload {
-                border: 2px solid #8abeb7;
-                color: #6abab7;
-                background-color: #6abab7; /* Changed background color */
-                display: inline-block;
-                cursor: pointer;
-                padding: 15px 30px;
-                border-radius: 30px;
-                font-size: 18px;
-                transition: all 0.3s ease;
-                outline: none;
-                margin: 10px 0;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            }
-
-            .custom-file-upload:hover {
-                color: #fff;
-                background-color: #4e9a06;
-                border-color: #4e9a06; /* Adjust border color on hover */
-            }
-
-            .upload-button {
-                background-color: #6abab7;
-                color: #fff;
-                padding: 15px 30px;
-                border: none;
-                border-radius: 30px;
-                cursor: pointer;
-                font-size: 18px;
-                transition: background-color 0.3s ease;
-                margin-top: 20px;
-                outline: none;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            }
-
-            .upload-button:hover {
-                background-color: #6abab7;
-            }
-
-            .upload-button.w3-hide {
-                display: none;
-            }
-
-            .cancel-button {
-                background-color: #cc0000;
-                color: #fff;
-                padding: 15px 30px;
-                border: none;
-                border-radius: 30px;
-                cursor: pointer;
-                font-size: 18px;
-                transition: background-color 0.3s ease;
-                margin-top: 20px;
-                outline: none;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            }
-
-            .cancel-button:hover {
-                background-color: #a70000;
-            }
-
-            .cancel-button.w3-hide {
-                display: none;
-            }
-
-            .progress-bar {
-                background-color: #8abeb7;
-                height: 100%;
-                width: 0;
-                transition: width 0.3s ease;
-                text-align: center;
-                line-height: 20px;
-                color: #fff;
-                font-weight: bold;
-                border-radius: 5px;
-            }
-
-            .progress-bar-container {
-                margin-top: 20px;
-                width: 100%;
-                height: 20px;
-                background-color: rgba(255, 255, 255, 0.1);
-                border-radius: 10px;
-                overflow: hidden;
-            }
-
-            .file-url {
-                margin-top: 20px;
-                font-size: 16px;
-                overflow-wrap: break-word;
-                transition: opacity 0.3s ease;
-                opacity: 0;
-            }
-
-            .file-url.show {
-                opacity: 1;
-            }
-
-            .error-message {
-                margin-top: 10px;
-                color: #cc0000;
-                font-size: 14px;
-                transition: opacity 0.3s ease;
-                opacity: 0;
-            }
-
-            .error-message.show {
-                opacity: 1;
-            }
-
-            .footer {
-                margin-top: 20px;
-                font-size: 12px;
-                color: #999;
-            }
-
-            .footer a {
-                color: #8abeb7;
-                text-decoration: none;
-                transition: color 0.3s;
-            }
-
-            .footer a:hover {
-                color: #4e9a06;
-            }
-
-            .file-name {
-                margin-top: 10px;
-                font-size: 16px;
-                color: #999;
-            }
-
-            .upload-success {
-                color: #4e9a06;
-                font-size: 18px;
-                text-align: center;
-                margin-top: 20px;
-            }
-
-            .upload-success a {
-                color: #8abeb7;
-                text-decoration: none;
-                font-weight: bold;
-            }
-
-            .upload-success a:hover {
-                text-decoration: underline;
-            }
-
-            .copy-url-button {
-                background-color: #8abeb7;
-                color: #fff;
-                border: none;
-                border-radius: 5px;
-                padding: 10px 15px;
-                cursor: pointer;
-                font-size: 16px;
-                margin-top: 10px;
-                transition: background-color 0.3s ease;
-            }
-
-            .copy-url-button:hover {
-                background-color: #4e9a06;
-            }
-
-            .copy-url-button:active {
-                background-color: #3b7100;
-            }
-
-            .modal {
-                display: none;
-                position: fixed;
-                z-index: 1;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                overflow: auto;
-                background-color: rgba(0, 0, 0, 0.7);
-            }
-
-            .modal-content {
-                background-color: #252525;
-                margin: 15% auto;
-                padding: 20px;
-                border: 1px solid #888;
-                width: 80%;
-                max-width: 500px;
-                border-radius: 10px;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-                text-align: center;
-            }
-
-            .close {
-                color: #999;
-                float: right;
-                font-size: 28px;
-                font-weight: bold;
-            }
-
-            .close:hover,
-            .close:focus {
-                color: #fff;
-                text-decoration: none;
-                cursor: pointer;
-            }
-
-            .modal-body p {
-                font-size: 18px;
-                color: #4e9a06;
-            }
-
-            .modal-body a {
-                color: #8abeb7;
-                font-weight: bold;
-                text-decoration: none;
-                transition: color 0.3s;
-            }
-
-            .modal-body a:hover {
-                color: #4e9a06;
-            }
-
-            /* Code aesthetics */
-
-            .code-block {
-                background-color: #1a1a1a;
-                color: #c5c8c6;
-                padding: 20px;
-                border-radius: 8px;
-                margin-top: 20px;
-                font-size: 14px;
-                font-family: "Courier New", Courier, monospace;
-                white-space: pre-wrap;
-                overflow-x: auto;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            }
-
-            .code-block .comment {
-                color: #75715e;
-                font-style: italic;
-            }
-
-            .code-block .keyword {
-                color: #cc7832;
-                font-weight: bold;
-            }
-
-            .code-block .string {
-                color: #6a8759;
-            }
-
-            .code-block .number {
-                color: #6897bb;
-            }
-
-            .code-block .operator {
-                color: #fff;
-            }
-
-            .code-block .punctuation {
-                color: #fff;
-            }
-
-            .code-block .function {
-                color: #b5bd68;
-            }
-
-            .code-block .variable {
-                color: #9cdcfe;
-            }
-
-            .code-block .class {
-                color: #4e9a06;
-            }
-
-            .code-block .builtin {
-                color: #81a2be;
-            }
-
-            .banner {
-                text-align: center;
-                margin-bottom: 12px;
-            }
-            .banner img {
-                max-width: 56%;
-                height: auto;
-                border-radius: 10px;
-            }
+            .dropzone{border:2px dashed var(--glass);border-radius:12px;padding:28px;min-height:220px;display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center;transition:background .28s,border-color .28s,transform .18s,box-shadow .18s}
+            .dropzone:hover{transform:translateY(-4px) scale(1.01);box-shadow:0 10px 30px rgba(17,8,30,0.6)}
+            .dropzone.drag{background:linear-gradient(90deg, var(--glow), rgba(109,40,217,0.06));border-color:var(--accent);box-shadow:0 6px 30px rgba(109,40,217,0.08)}
+            .dropzone .title{font-weight:600;color:#d8fbe8}
+            .dropzone .hint{color:var(--muted);font-size:13px}
+            .actions{display:flex;gap:10px;align-items:center}
+            .btn{background:var(--accent);color:#ffffff;padding:10px 14px;border-radius:10px;border:none;cursor:pointer;font-weight:600;transition:transform .12s,box-shadow .12s,background .12s}
+            .btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(109,40,217,0.12)}
+            .btn.small{padding:6px 8px;font-size:13px}
+            .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);transition:background .12s}
+            .btn.ghost:hover{background:rgba(255,255,255,0.02)}
+            .btn{ -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+            .meta{color:var(--muted);font-size:13px}
+            .side{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:10px;padding:18px}
+            .progress{height:12px;background:rgba(255,255,255,0.03);border-radius:8px;overflow:hidden;margin-top:12px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.02)}
+            .progress > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width .28s cubic-bezier(.2,.9,.2,1);box-shadow:0 6px 18px rgba(109,40,217,0.12)}
+            .url{word-break:break-all;background:rgba(255,255,255,0.02);padding:10px;border-radius:8px;margin-top:12px;color:var(--accent);display:flex;gap:8px;align-items:center;justify-content:space-between}
+            .small{font-size:13px;color:var(--muted)}
+            .muted{color:var(--muted)}
+            /* History list scrollbar and touch improvements */
+            #history-list{padding-right:6px; -webkit-overflow-scrolling: touch;}
+            /* Firefox */
+            #history-list{scrollbar-width:thin; scrollbar-color: var(--accent) rgba(255,255,255,0.02);}
+            /* WebKit */
+            #history-list::-webkit-scrollbar{width:10px;height:10px}
+            #history-list::-webkit-scrollbar-track{background:transparent;border-radius:10px}
+            #history-list::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--accent),#8b5cf6);border-radius:10px;border:2px solid rgba(0,0,0,0.15)}
+            #history-list::-webkit-scrollbar-thumb:hover{filter:brightness(.95)}
+            footer{margin-top:16px;text-align:center;color:var(--muted);font-size:13px}
+            .toast{position:fixed;right:20px;top:20px;z-index:9999;background:linear-gradient(180deg,#120722,#0b0614);padding:12px 18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 18px 48px rgba(109,40,217,0.14);opacity:0;transform:translateY(-12px);transition:opacity .28s,transform .28s,box-shadow .28s;backdrop-filter: blur(6px);color:#fff}
+            .toast.show{display:block;opacity:1;transform:translateY(0)}
+            .toast.success{background:linear-gradient(180deg,#1f1530,#1a0f2a);border:1px solid rgba(110,231,183,0.08);box-shadow:0 18px 48px rgba(110,231,183,0.08);color:#e6fff2}
+            .toast.error{background:linear-gradient(180deg,#3a0610,#2b0410);border:1px solid rgba(255,107,107,0.08);box-shadow:0 22px 60px rgba(255,107,107,0.12);color:#ffe6e6}
+            .toast.info{background:linear-gradient(180deg,#0e0b1a,#0b0716);border:1px solid rgba(155,92,246,0.06);box-shadow:0 12px 40px rgba(109,40,217,0.08);color:#e6e6ff}
+            .toast .title{font-weight:700;margin-bottom:4px}
+            .toast .msg{font-size:13px;opacity:.95}
+            @keyframes floaty {0%{transform:translateY(0)}50%{transform:translateY(-6px)}100%{transform:translateY(0)}}
+            input[type=file]{display:none}
+            .history-item{transition:transform .18s,box-shadow .18s,background .18s}
+            .history-item:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(109,40,217,0.08);background:linear-gradient(180deg, rgba(155,92,246,0.03), rgba(109,40,217,0.02))}
         </style>
     </head>
     <body>
-    <a class="github-fork-ribbon" href="https://github.com/FreeCode911/AnoUpload" data-ribbon="Fork me on GitHub" title="Fork me on GitHub">Fork me on GitHub</a>
-        <div class="w3-container">
-            <div class="upload-container">
-                <div class="banner">
-                    <img
-                        src="https://lykfile.me/cn/7B3CF0-2024-07-07-LYK-CLOUD.gif"
-                        alt="Banner Image"
-                    />
-                </div>
-                <h1>Upload a File</h1>
-                <label
-                    for="file-upload"
-                    class="custom-file-upload w3-btn w3-blue"
-                >
-                    Select File
-                </label>
-                <form
-                    id="upload-form"
-                    method="post"
-                    enctype="multipart/form-data"
-                >
-                    <input
-                        id="file-upload"
-                        type="file"
-                        name="file"
-                        class="w3-hide"
-                    />
-                    <div id="file-name" class="file-name"></div>
-                    <button
-                        id="upload-button"
-                        type="button"
-                        class="upload-button w3-btn w3-green w3-hide"
-                    >
-                        Upload
-                    </button>
-                    <button
-                        id="cancel-button"
-                        type="button"
-                        class="cancel-button w3-btn w3-red w3-hide"
-                    >
-                        Cancel
-                    </button>
-                    <!-- Progress Bar -->
-                    <div class="progress-bar-container">
-                        <div
-                            id="progress-bar"
-                            class="progress-bar w3-container w3-green w3-center"
-                            style="width: 0%"
-                        >
-                            0%
-                        </div>
+        <div class="container">
+            <div class="header">
+                <div class="brand">
+                    <img src="/file/favicon.ico" alt="logo"/>
+                    <div>
+                        <h1>AnoUpload</h1>
+                        <div class="small muted">Fast, anonymous file uploads</div>
                     </div>
-                    <!-- File URL Display -->
-                    <div id="file-url" class="file-url upload-success"></div>
-                    <!-- Error Message Display -->
-                    <div id="error-message" class="error-message"></div>
-                </form>
-                <!-- Footer -->
-                <div class="footer">
-                    <p>
-                        Need help?
-                        <a href="https://lykcloud.me" target="_blank"
-                            >Visit our Help Center</a
-                        >
-                    </p>
-                    <p>&copy; 2024 AnoUpload.me. All rights reserved.</p>
                 </div>
+                <div class="meta">Need help? <a href="https://lykcloud.me" target="_blank" style="color:var(--accent);text-decoration:none;margin-left:6px">Help Center</a></div>
             </div>
+
+            <div class="card">
+                <div>
+                    <div id="dropzone" class="dropzone" tabindex="0">
+                        <div class="title">Drop files here or click to select</div>
+                        <div class="hint">Supports large files — uploads go directly to the server.</div>
+                        <div class="actions">
+                            <label class="btn" for="file-input">Choose files</label>
+                            <button id="upload-btn" class="btn ghost" disabled>Upload</button>
+                            <button id="cancel-btn" class="btn ghost" style="display:none;background:var(--danger);color:white">Cancel</button>
+                        </div>
+                        <div id="selected" class="meta" style="margin-top:8px"></div>
+                        <input id="file-input" type="file" name="file" multiple />
+                    </div>
+
+                    <div class="progress" aria-hidden="true" style="margin-top:16px">
+                        <i id="progress-bar"></i>
+                    </div>
+
+                    <div id="preview" style="margin-top:12px;display:none">
+                        <img id="preview-img" src="" alt="preview" style="max-width:160px;border-radius:8px;border:1px solid rgba(255,255,255,0.04)"/>
+                    </div>
+
+                    <div style="display:flex;gap:12px;margin-top:8px;align-items:center">
+                        <div class="small muted">Server max:</div>
+                        <div id="server-max" class="small">—</div>
+                        <div id="speed" class="small muted" style="margin-left:auto">ETA: —</div>
+                    </div>
+
+                    <div style="margin-top:6px">
+                        <div id="upload-status" class="small muted" style="min-height:18px">&nbsp;</div>
+                    </div>
+
+                    <div id="error" class="small" style="color:var(--danger);margin-top:8px;display:none"></div>
+                    <div id="file-url" style="display:none">
+                        <div class="url" id="url-box"></div>
+                    </div>
+                </div>
+
+                <aside class="side">
+                    <div style="font-weight:700;margin-bottom:8px">Quick info</div>
+                    <div class="small muted">• Files are temporarily stored and uploaded to the configured repository.</div>
+                    <div class="small muted" style="margin-top:8px">• Max upload size: <span id="quick-max">1 GB</span> (client-side check)</div>
+                    <div style="margin-top:12px">
+                        <button id="copy-btn" class="btn" style="width:100%;display:none">Copy link</button>
+                    </div>
+                    <div id="history" style="margin-top:12px">
+                        <div style="display:flex;justify-content:space-between;align-items:center">
+                            <div style="font-weight:700">Upload history</div>
+                            <button id="clear-history" class="btn ghost" style="font-size:12px;padding:6px 8px">Clear</button>
+                        </div>
+                        <div id="history-list" style="margin-top:8px;max-height:220px;overflow:auto"></div>
+                    </div>
+                    <div style="margin-top:10px" class="small muted">&copy; 2024 AnoUpload</div>
+                </aside>
+            </div>
+
+            <footer>
+                <small class="muted">Open-source • <a href="https://github.com/FreeCode911/AnoUpload" target="_blank" style="color:var(--accent)">Fork on GitHub</a></small>
+            </footer>
         </div>
 
-        <!-- Modal -->
-        <div id="myModal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <div id="modal-body" class="modal-body"></div>
-            </div>
-        </div>
+        <div id="toast" class="toast"></div>
 
         <script>
-            const uploadForm = document.getElementById("upload-form");
-            const fileUpload = document.getElementById("file-upload");
-            const uploadButton = document.getElementById("upload-button");
-            const cancelButton = document.getElementById("cancel-button");
-            const progressBar = document.getElementById("progress-bar");
-            const fileUrlElement = document.getElementById("file-url");
-            const errorMessageElement =
-                document.getElementById("error-message");
-            const fileNameElement = document.getElementById("file-name");
-            const modal = document.getElementById("myModal");
-            const modalBody = document.getElementById("modal-body");
-            const span = document.getElementsByClassName("close")[0];
+            const fileInput = document.getElementById('file-input');
+            const dropzone = document.getElementById('dropzone');
+            const uploadBtn = document.getElementById('upload-btn');
+            const cancelBtn = document.getElementById('cancel-btn');
+            const selected = document.getElementById('selected');
+            const progressBar = document.getElementById('progress-bar');
+            const errorEl = document.getElementById('error');
+            const urlBox = document.getElementById('url-box');
+            const fileUrlWrap = document.getElementById('file-url');
+            const copyBtn = document.getElementById('copy-btn');
+            const toast = document.getElementById('toast');
+            const previewWrap = document.getElementById('preview');
+            const previewImg = document.getElementById('preview-img');
 
-            let xhr; // Define xhr globally for cancel operation
+            let currentXhr = null;
+            let currentFile = null; // when multiple, this is the first or null
+            let selectedFiles = [];
+            let cancelRequested = false;
+            let currentController = null;
+            let serverMax = null;
+            let serverMode = null;
+            let lastPreviewUrl = null;
+            const DEFAULT_MAX = 1 * 1024 * 1024 * 1024; // fallback 1GB
+            const CHUNK_SIZE = 8 * 1024 * 1024; // 8 MB chunks for upload-chunk
 
-            fileUpload.addEventListener("change", () => {
-                const file = fileUpload.files[0];
-                if (file) {
-                    fileNameElement.textContent = `Selected file: ${file.name}`;
-                    if (file.size > 1 * 1024 * 1024 * 1024) {
-                        // Check if the file size exceeds 59MB
-                        alert(
-                            "The file size exceeds the 1GB limit. Please select a smaller file.",
-                        );
-                        fileUpload.value = ""; // Clear the selected file
-                        fileNameElement.textContent = ""; // Clear the file name display
-                    } else {
-                        uploadButton.classList.remove("w3-hide"); // Show upload button
-                        cancelButton.classList.add("w3-hide"); // Hide cancel button
-                    }
+            function showToast(msg, type='info'){
+                toast.className = 'toast ' + (type||'info');
+                // support object {title,msg}
+                if(typeof msg === 'object' && msg !== null){
+                    toast.innerHTML = `${msg.title?`<div class="title">${msg.title}</div>`:''}<div class="msg">${msg.msg||''}</div>`;
+                } else {
+                    toast.innerHTML = `<div class="msg">${String(msg)}</div>`;
                 }
-            });
-
-            uploadButton.addEventListener("click", () => {
-                const file = fileUpload.files[0];
-                if (!file) return;
-
-                const formData = new FormData(uploadForm); // Create FormData from the form
-
-                xhr = new XMLHttpRequest();
-                xhr.open("POST", "/", true); // Send to the '/' route
-
-                xhr.upload.onprogress = function (e) {
-                    if (e.lengthComputable) {
-                        const percentComplete = (e.loaded / e.total) * 100;
-                        progressBar.style.width = percentComplete + "%";
-                        progressBar.textContent =
-                            percentComplete.toFixed(0) + "%"; // Update progress text
-                    }
-                };
-
-                xhr.onload = function () {
-                    if (xhr.status === 200) {
-                        console.log("File uploaded successfully!");
-                        const response = JSON.parse(xhr.responseText); // Parse the JSON response
-                        const fileUrl = response.file_url; // Extract the file URL
-                        modalBody.innerHTML = `
-                        <p>Your file has been uploaded. You can access it 
-                            <a href="${fileUrl}" target="_blank">here</a>.
-                        </p>
-                        <button class="copy-url-button w3-btn w3-blue" onclick="copyToClipboard('${fileUrl}')">Copy URL</button>
-                    `;
-                        modal.style.display = "block";
-                        progressBar.style.width = "0%";
-                        progressBar.textContent = "0%"; // Reset progress text
-                        errorMessageElement.style.display = "none";
-                        fileNameElement.textContent = ""; // Clear the file name display
-                        fileUpload.value = ""; // Clear the selected file
-                        uploadButton.classList.add("w3-hide"); // Hide upload button
-                        cancelButton.classList.add("w3-hide"); // Hide cancel button
-                    } else {
-                        console.error("Upload failed. Status: " + xhr.status);
-                        errorMessageElement.textContent =
-                            "Upload failed. Please try again later.";
-                        errorMessageElement.classList.add("show");
-                        progressBar.style.width = "0%";
-                        progressBar.textContent = "0%"; // Reset progress text
-                        uploadButton.classList.add("w3-hide"); // Hide upload button
-                        cancelButton.classList.add("w3-hide"); // Hide cancel button
-                    }
-                };
-
-                xhr.onerror = function () {
-                    console.error("Error occurred during upload.");
-                    errorMessageElement.textContent =
-                        "Error occurred during upload. Please check your network connection and try again.";
-                    errorMessageElement.classList.add("show");
-                    progressBar.style.width = "0%";
-                    progressBar.textContent = "0%"; // Reset progress text
-                    uploadButton.classList.add("w3-hide"); // Hide upload button
-                    cancelButton.classList.add("w3-hide"); // Hide cancel button
-                };
-
-                xhr.send(formData);
-
-                // Update UI for uploading state
-                uploadButton.classList.add("w3-hide"); // Hide upload button
-                cancelButton.classList.remove("w3-hide"); // Show cancel button
-                progressBar.style.width = "0%"; // Reset progress bar
-                progressBar.textContent = "0%"; // Reset progress text
-                errorMessageElement.classList.remove("show"); // Hide error message
-            });
-
-            cancelButton.addEventListener("click", () => {
-                if (xhr) xhr.abort(); // Cancel the upload if xhr exists
-                progressBar.style.width = "0%";
-                progressBar.textContent = "0%"; // Reset progress text
-                uploadButton.classList.remove("w3-hide"); // Show upload button
-                cancelButton.classList.add("w3-hide"); // Hide cancel button
-                fileUpload.value = ""; // Clear the selected file
-                fileNameElement.textContent = ""; // Clear the file name display
-            });
-
-            span.onclick = function () {
-                modal.style.display = "none";
-            };
-
-            window.onclick = function (event) {
-                if (event.target == modal) {
-                    modal.style.display = "none";
-                }
-            };
-
-            function copyToClipboard(text) {
-                const textarea = document.createElement("textarea");
-                textarea.value = text;
-                document.body.appendChild(textarea);
-                textarea.select();
-                document.execCommand("copy");
-                document.body.removeChild(textarea);
-                alert("URL copied to clipboard: " + text);
+                toast.classList.add('show');
+                // longer for errors
+                const timeout = type==='error'? 6000 : 3200;
+                clearTimeout(window.__toastTimer);
+                window.__toastTimer = setTimeout(()=>{ toast.classList.remove('show'); }, timeout);
             }
+
+            function humanSize(bytes){
+                if(!Number.isFinite(bytes)) return '—';
+                const KB = 1024;
+                const MB = KB * 1024;
+                const GB = MB * 1024;
+                if(bytes >= GB) return (bytes/GB).toFixed(2).replace(/\.00$/, '') + ' GB';
+                if(bytes >= MB) return (bytes/MB).toFixed(0) + ' MB';
+                if(bytes >= KB) return (bytes/KB).toFixed(0) + ' KB';
+                return bytes + ' B';
+            }
+
+                      function setSelected(file){
+                                        // If file is null, clear selection
+                                        if(!file){
+                                            selected.textContent = '';
+                                            uploadBtn.disabled = true;
+                                            selectedFiles = [];
+                                            if(lastPreviewUrl){ URL.revokeObjectURL(lastPreviewUrl); lastPreviewUrl = null; }
+                                            previewWrap.style.display='none';
+                                            previewImg.src = '';
+                                            return;
+                                        }
+
+                                        // When multiple are selected, file is the first one for display
+                                        currentFile = file;
+                                        uploadBtn.disabled = false;
+                                        const totalBytes = selectedFiles.reduce((s,f)=>s+f.size,0);
+                                        selected.textContent = `${selectedFiles.length} file(s) selected • ${humanSize(totalBytes)}`;
+
+                                        // preview only first image
+                                        if(file.type && file.type.startsWith('image/')){
+                                            if(lastPreviewUrl){ URL.revokeObjectURL(lastPreviewUrl); lastPreviewUrl = null; }
+                                            const url = URL.createObjectURL(file);
+                                            previewImg.src = url;
+                                            lastPreviewUrl = url;
+                                            previewWrap.style.display = 'block';
+                                        } else {
+                                            if(lastPreviewUrl){ URL.revokeObjectURL(lastPreviewUrl); lastPreviewUrl = null; }
+                                            previewWrap.style.display = 'none';
+                                            previewImg.src = '';
+                                        }
+                                    }
+
+            // Only open file picker when clicking the dropzone background itself.
+            // If the click originates from the label or from action buttons, ignore it to avoid double dialogs.
+            let pickerOpen = false; // debounce to avoid duplicate native pickers on mobile
+            function openPickerOnce(){
+                if(pickerOpen) return;
+                pickerOpen = true;
+                try{ fileInput.click(); }catch(e){}
+                // reset after short delay — mobile browsers sometimes synthesize click events
+                setTimeout(()=>{ pickerOpen = false; }, 1500);
+            }
+
+            dropzone.addEventListener('click', (e)=>{
+                // if user clicked the label (which already opens the picker) or clicked inside the actions, do nothing
+                if (e.target.closest('label[for="file-input"]') || e.target.closest('.actions')) return;
+                openPickerOnce();
+            });
+
+            // On touch devices, treat tap on the dropzone similarly to click (but avoid duplicate triggers)
+            dropzone.addEventListener('touchend', (e)=>{
+                // ignore if touch is on the label or control buttons
+                if (e.target.closest('label[for="file-input"]') || e.target.closest('.actions')) return;
+                // prevent synthetic mouse events if possible
+                e.preventDefault();
+                openPickerOnce();
+            }, {passive:false});
+
+            // Only trigger file picker on keyboard when the dropzone itself is focused
+            dropzone.addEventListener('keydown', e=>{
+                if ((e.key === 'Enter' || e.key === ' ') && document.activeElement === dropzone) {
+                    e.preventDefault();
+                    fileInput.click();
+                }
+            });
+
+            dropzone.addEventListener('dragover', e=>{ e.preventDefault(); dropzone.classList.add('drag') });
+            dropzone.addEventListener('dragleave', e=>{ dropzone.classList.remove('drag') });
+            dropzone.addEventListener('drop', e=>{ e.preventDefault(); dropzone.classList.remove('drag'); if(e.dataTransfer.files && e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]) });
+
+            // When native picker is opened, browsers may fire multiple events (touch+click). Keep a stronger guard.
+            fileInput.addEventListener('click', ()=>{
+                pickerOpen = true;
+                // keep it blocked briefly while native picker may still be interacting
+                setTimeout(()=>{ pickerOpen = false; }, 1800);
+            });
+            fileInput.addEventListener('focus', ()=>{
+                pickerOpen = true;
+                setTimeout(()=>{ pickerOpen = false; }, 1800);
+            });
+            fileInput.addEventListener('change', ()=>{
+                // file selection completed; keep blocked briefly to avoid immediate re-open
+                pickerOpen = true;
+                setTimeout(()=>{ pickerOpen = false; }, 1200);
+                if(fileInput.files && fileInput.files.length) {
+                    selectedFiles = Array.from(fileInput.files);
+                    handleFile(selectedFiles[0]);
+                }
+            });
+
+                    async function handleFile(file){
+                                errorEl.style.display='none'; fileUrlWrap.style.display='none'; copyBtn.style.display='none';
+                                const max = serverMax || DEFAULT_MAX;
+                                // check per-file against serverMax
+                                const offending = selectedFiles.filter(f => f.size > max);
+                                if(offending.length){
+                                    const list = offending.slice(0,3).map(f=>`${f.name} (${humanSize(f.size)})`).join(', ');
+                                    const more = offending.length>3? ` +${offending.length-3} more` : '';
+                                    const msg = `One or more files exceed server limit (${humanSize(max)}): ${list}${more}`;
+                                    errorEl.style.display='block';
+                                    errorEl.textContent = msg;
+                                    showToast(msg, 'error');
+                                    fileInput.value=''; setSelected(null); selectedFiles = []; return;
+                                }
+                                setSelected(file)
+                            }
+
+                    uploadBtn.addEventListener('click', async ()=>{
+                        if(!selectedFiles || selectedFiles.length===0) return;
+                        uploadBtn.disabled = true; cancelBtn.style.display='inline-block';
+                        cancelRequested = false;
+
+                        const totalBytes = selectedFiles.reduce((s,f)=>s+f.size,0);
+                        let uploadedBytes = 0;
+
+                        function updateProgress(bytes){
+                            const pct = totalBytes? Math.round((uploadedBytes/totalBytes)*100) : 0;
+                            progressBar.style.width = pct + '%';
+                        }
+
+                        async function uploadFileChunked(file){
+                            const uploadId = `${Date.now()}-${Math.random().toString(16).slice(2,10)}`;
+                            const chunkSize = CHUNK_SIZE;
+                            const total = Math.ceil(file.size / chunkSize);
+                            for(let idx=0; idx<total; idx++){
+                                if(cancelRequested) throw new Error('cancelled');
+                                const start = idx * chunkSize;
+                                const end = Math.min(file.size, start + chunkSize);
+                                const blob = file.slice(start, end);
+
+                                const form = new FormData();
+                                form.append('chunk', blob, file.name);
+                                form.append('uploadId', uploadId);
+                                form.append('filename', file.name);
+                                form.append('index', String(idx));
+                                form.append('total', String(total));
+
+                                const controller = new AbortController();
+                                currentController = controller;
+                                const resp = await fetch('/upload-chunk', { method: 'POST', body: form, signal: controller.signal });
+                                currentController = null;
+                                if(!resp.ok){
+                                    if(resp.status === 413){
+                                        const j = await resp.json().catch(()=>null);
+                                        const msg = j && j.maxContentHuman ? `Upload rejected: exceeds server limit (${j.maxContentHuman})` : 'Upload rejected: file too large';
+                                        throw new Error(msg);
+                                    }
+                                    throw new Error('Chunk upload failed: '+resp.status);
+                                }
+
+                                const j = await resp.json().catch(()=>null);
+                                if(idx+1 >= total && j && j.file_url){
+                                    urlBox.innerHTML = `<div style="flex:1">${j.file_url}</div>`;
+                                    fileUrlWrap.style.display='block'; copyBtn.style.display='block'; addHistoryEntry(j.file_url);
+                                }
+
+                                uploadedBytes += blob.size;
+                                updateProgress();
+                            }
+                        }
+
+                        async function uploadFileSingle(file){
+                            if(cancelRequested) throw new Error('cancelled');
+                            const form = new FormData(); form.append('file', file, file.name);
+                            const controller = new AbortController();
+                            currentController = controller;
+                            const resp = await fetch('/', { method: 'POST', body: form, signal: controller.signal });
+                            currentController = null;
+                            if(!resp.ok){
+                                if(resp.status === 413){
+                                    const j = await resp.json().catch(()=>null);
+                                    const msg = j && j.maxContentHuman ? `Upload rejected: exceeds server limit (${j.maxContentHuman})` : 'Upload rejected: file too large';
+                                    throw new Error(msg);
+                                }
+                                throw new Error('Upload failed: '+resp.status);
+                            }
+                            const j = await resp.json().catch(()=>null);
+                            const links = j && (j.file_urls || (j.file_url ? [j.file_url] : [])) || [];
+                            if(links.length){ urlBox.innerHTML = links.map(l=>`<div style="flex:1">${l}</div>`).join(''); fileUrlWrap.style.display='block'; copyBtn.style.display='block'; links.forEach(l=>addHistoryEntry(l)); }
+                            uploadedBytes += file.size; updateProgress();
+                        }
+
+                        try{
+                            for(let i=0;i<selectedFiles.length;i++){
+                                if(cancelRequested) break;
+                                const f = selectedFiles[i];
+                                document.getElementById('upload-status').textContent = `Uploading ${i+1}/${selectedFiles.length}: ${f.name}`;
+                                if(f.size > CHUNK_SIZE){
+                                    await uploadFileChunked(f);
+                                } else {
+                                    await uploadFileSingle(f);
+                                }
+                            }
+                            if(!cancelRequested) showToast('Upload complete', 'success');
+                        }catch(err){
+                            const msg = (err && err.message) ? err.message : 'Upload failed';
+                            errorEl.style.display = 'block'; errorEl.textContent = msg; showToast(msg, 'error');
+                        } finally {
+                            uploadBtn.disabled = false; cancelBtn.style.display='none';
+                            if(currentXhr) currentXhr = null; currentController = null;
+                            progressBar.style.width = '0%'; document.getElementById('speed').textContent = 'ETA: —';
+                            fileInput.value = ''; setSelected(null); selectedFiles = []; cancelRequested = false;
+                            document.getElementById('upload-status').textContent = '';
+                        }
+                    });
+
+                    function formatTime(sec){
+                        if(!isFinite(sec) || sec<=0) return '0s';
+                        sec = Math.round(sec);
+                        const m = Math.floor(sec/60); const s = sec%60; return m>0? `${m}m ${s}s` : `${s}s`;
+                    }
+
+            cancelBtn.addEventListener('click', ()=>{ cancelRequested = true; if(currentXhr) currentXhr.abort(); currentXhr=null; progressBar.style.width='0%'; uploadBtn.disabled=false; cancelBtn.style.display='none'; setSelected(null); fileInput.value=''; document.getElementById('upload-status').textContent = 'Upload cancelled'; showToast('Upload cancelled','info'); });
+
+            copyBtn.addEventListener('click', ()=>{
+                const text = urlBox.textContent.trim();
+                if(!text) return;
+                if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(()=>showToast('Link copied','success')) } else { const t = document.createElement('textarea'); t.value = text; document.body.appendChild(t); t.select(); document.execCommand('copy'); document.body.removeChild(t); showToast('Link copied','success'); }
+            });
+
+            // Upload history (localStorage)
+            const HISTORY_KEY = 'anoupload.history.v1';
+            const historyListEl = document.getElementById('history-list');
+            const clearHistoryBtn = document.getElementById('clear-history');
+
+            function loadHistory(){
+                try{ const raw = localStorage.getItem(HISTORY_KEY); return raw? JSON.parse(raw): [] }catch(e){ return [] }
+            }
+
+            function saveHistory(items){
+                try{ localStorage.setItem(HISTORY_KEY, JSON.stringify(items||[])); }catch(e){}
+            }
+
+            function addHistoryEntry(url){
+                const items = loadHistory();
+                items.unshift({url, at: Date.now()});
+                if(items.length>50) items.splice(50);
+                saveHistory(items);
+                renderHistory();
+            }
+
+            function renderHistory(){
+                const items = loadHistory();
+                historyListEl.innerHTML = items.length? items.map(it=>{
+                    const t = new Date(it.at); const time = t.toLocaleString();
+                    return `<div class="history-item" style="padding:8px;border-radius:8px;background:rgba(255,255,255,0.01);margin-bottom:8px;display:flex;gap:8px;align-items:center">
+                        <div style="flex:1;font-size:13px;word-break:break-all">${it.url}<div style="color:var(--muted);font-size:11px;margin-top:4px">${time}</div></div>
+                        <div style="display:flex;flex-direction:column;gap:6px">
+                            <button class="btn small copy-history" data-url="${it.url}">Copy</button>
+                            <a class="btn ghost small" href="${it.url}" target="_blank">Open</a>
+                        </div>
+                    </div>`
+                }).join('') : '<div class="small muted">No uploads yet</div>';
+
+                // wire copy buttons
+                Array.from(historyListEl.querySelectorAll('.copy-history')).forEach(b=>{
+                    b.addEventListener('click', ()=>{
+                        const u = b.getAttribute('data-url');
+                        if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(u).then(()=>showToast('Link copied','success')) } else { const t = document.createElement('textarea'); t.value = u; document.body.appendChild(t); t.select(); document.execCommand('copy'); document.body.removeChild(t); showToast('Link copied','success'); }
+                    });
+                });
+            }
+
+            clearHistoryBtn.addEventListener('click', ()=>{ saveHistory([]); renderHistory(); showToast('History cleared','info'); });
+
+            // render on load
+            renderHistory();
+
+                            // fetch server config
+                            (async function(){
+                                try{
+                                    const r = await fetch('/config');
+                                    const j = await r.json();
+                                    serverMax = j && j.maxContentLength ? j.maxContentLength : null;
+                                    serverMode = j && j.storageMode ? j.storageMode : null;
+                                    const maxDisplay = serverMax ? humanSize(serverMax) : '—';
+                                    document.getElementById('server-max').textContent = maxDisplay + (serverMode ? ` (${serverMode})` : '');
+                                    const qm = document.getElementById('quick-max'); if(qm) qm.textContent = maxDisplay;
+                                }catch(e){
+                                    document.getElementById('server-max').textContent = '—';
+                                }
+                            })();
         </script>
     </body>
 </html>

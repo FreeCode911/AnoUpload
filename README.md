@@ -1,68 +1,100 @@
 
-# AnoUpload 🚀
+# AnoUpload v2.0 — Modern anonymous file uploader 🚀
 
-AnoUpload is a sleek and user-friendly file hosting service that allows you to upload files with ease while keeping your identity safe and secure. Built with the powerful combination of Node.js, Express, and Multer, AnoUpload makes file sharing and storage a breeze!, Anonymous File Uploader Using GitHub Cloud Storage
+AnoUpload is a compact, privacy-minded file uploader built with Node.js, Express and Multer. Version 2.0 focuses on reliability, a modern UI, and large-file resilience (client chunking + server reassembly).
 
+![License](https://img.shields.io/badge/license-GPL--3.0-blue)
 
-## 🌟 Features
+## What's new in v2.0
 
-- **🔓 Free and Unlimited File Hosting:** Upload as many files as you want without any size limitations.
-- **🕵️‍♂️ Anonymous Uploads:** No need to register or create an account—your identity stays hidden.
-- **🔒 Secure File Sharing:** Files are stored securely and can be accessed via unique URLs.
-- **🔗 Automatic GitHub Integration:** Files are seamlessly uploaded to a GitHub repository for long-term storage.
-- **📩 Discord Notifications:** Get real-time notifications whenever a new file is uploaded.
+- Modernized single-page UI with dark purple theme, responsive layout and mobile support
+- Optional Discord notifications: server no longer requires `DISCORD_WEBHOOK_URL` (notifications skipped when unset)
+- Robust `MAX_CONTENT_LENGTH` parsing (supports `1gb`, `1024MB`, etc.) and human-readable `/config` endpoint
+- Sequential uploads and client-side chunking (default 8 MB chunks) with server-side `/upload-chunk` support
+- Improved error handling and debug logging (413 JSON responses include configured limits and bytes received)
+- Local upload history (browser localStorage), drag-and-drop, previews, and copy/open shortcuts
 
-## 🚀 Getting Started
-[![Run on Repl.it](https://repl.it/badge/github/FreeCode911/AnoUpload)](https://repl.it/github/FreeCode911/AnoUpload)
+## Highlights
 
-- **▶️Tutorial** : https://youtu.be/ES_41VHT-t0
-1. **🍴 Fork this Repo:** Click the "Fork" button at the top right of this Repl.
-2. **⚙️ Set up Environment Variables:**
-   - Create a `.env` file in the root directory of your forked Repl.
-   - Add the following environment variables with your values:
-     - `UPLOAD_FOLDER`: The directory where uploaded files will be stored (e.g., "uploads").
-     - `MAX_CONTENT_LENGTH`: The maximum allowed file size in bytes (e.g., 1073741824 for 1GB).
-     - `GITHUB_TOKEN`: A GitHub personal access token with the `repo` scope. Generate one [here](https://github.com/settings/tokens).
-     - `GITHUB_REPO`: Your GitHub repository name in the format `owner/repo` (e.g., `FreeCode911/AnoUpload`).
-     - `WEBSITE_URL`: The URL of your deployed Repl (e.g., `https://your-name.com`).
-     - `DISCORD_WEBHOOK_URL`: The URL of your discord server channel webhook for notification if you donot need just leave it like `DISCORD_WEBHOOK_URL=none`
-3. **▶️ Run the AnoUpload:** `npm start`
-4. **🌐 Access the Website:** Open the link provided in the console output to access your AnoUpload instance.
+- Runtime: Node.js + Express
+- Upload handling: Multer (disk storage) + chunk reassembly endpoint
+- Storage: Local filesystem by default, optional GitHub-backed storage
 
-## NPM Package 
-**AnoUploader** is a straightforward NPM package for anonymous file uploads. 
+Key endpoints
+- `GET /` → web UI (`public/index.html`)
+- `GET /config` → server limits and storage mode
+- `POST /` → single-file upload (small files)
+- `POST /upload-chunk` → appendable chunk upload for large files
+- `GET /uploads/:filename` → serve uploaded files
 
-## Installation
+## Quick start
 
-To install the package, run:
+1. Clone and install:
 
 ```bash
-npm install anoupload
+git clone https://github.com/FreeCode911/AnoUpload.git
+cd AnoUpload
+npm install
 ```
 
-## Usage
+2. Create a `.env` file in the project root and set the minimum variables you need:
 
-1. **Require the package** in your Node.js file:
+```
+UPLOAD_FOLDER=uploads
+MAX_CONTENT_LENGTH=1gb            # accepts human formats like 1gb, 1024MB, 1000000000
+USE_GITHUB=false                  # true to push to GitHub instead of local disk
+GITHUB_TOKEN=                       # optional, required if USE_GITHUB=true
+GITHUB_REPO=                        # optional
+DISCORD_WEBHOOK_URL=none           # optional; leave unset or "none" to disable notifications
+```
 
-   ```javascript
-   const AnoUploader = require('anoupload');
-   ```
+3. Start the server:
 
-2. **Run your script**:
+```bash
+npm start
+```
 
-   Simply execute your `index.js` file or any other file where you've required `anoupload`. The package will start working automatically.
+4. Open the web UI in your browser at the address printed by the server (or visit `http://localhost:8080`).
 
+## Large-file flow (overview)
 
-## Star History
+- Client uploads files one-by-one; files larger than the chunk threshold are split into chunks (default 8 MB).
+- Each chunk is posted to `POST /upload-chunk` with metadata (uploadId, filename, index, total, isLast).
+- Server appends chunks to a temporary file and finalizes the upload when the last chunk arrives.
 
-<a href="https://star-history.com/#FreeCode911/AnoUpload&Date">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=FreeCode911/AnoUpload&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=FreeCode911/AnoUpload&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=FreeCode911/AnoUpload&type=Date" />
- </picture>
-</a>
+This avoids many upstream single-request size limits. If your host still rejects chunked POSTs, try reducing chunk size or increase proxy limits (e.g., NGINX `client_max_body_size`).
 
-## 📜 License
+## Configuration & environment variables
 
-This project is licensed under the GPL-3.0 license. For more details, see the `LICENSE` file.
+- `UPLOAD_FOLDER` — Directory to store uploads (default: `uploads`)
+- `MAX_CONTENT_LENGTH` — Maximum file size accepted by server (bytes or human like `1gb`)
+- `USE_GITHUB` — `true` to push files to GitHub instead of disk
+- `GITHUB_TOKEN`, `GITHUB_REPO` — required when `USE_GITHUB=true`
+- `DISCORD_WEBHOOK_URL` — Optional; leave unset or `none` to disable notifications
+
+The server exposes `GET /config` which returns `maxContentLength` and `maxContentHuman` for client enforcement.
+
+## Troubleshooting
+
+- 413 Request Entity Too Large (HTML nginx 413 returned immediately): upstream proxy likely rejected the request before Node received the body. Use client chunking or increase proxy limits on the host.
+- If server logs show `bytesReceived` ≈ 0 for a failed upload, that confirms upstream rejection.
+
+## Development notes
+
+- Main files:
+   - `index.js` — server entrypoint, parsing, chunk reassembly and debug logging
+   - `public/index.html` — UI, drag/drop, chunked upload client and history
+   - `discordWebhook.js` — optional webhook notifier
+
+## Changelog (v2.0)
+
+- 2.0.0 — 2025-08-24
+   - UI refresh, optional webhook, MAX_CONTENT_LENGTH improvements, client chunking + `/upload-chunk`, enhanced logging
+
+## License
+
+GPL-3.0 — see `LICENSE`
+
+---
+
+If you'd like, I can add an `UPGRADE.md` with migration notes or embed a small screenshot/GIF of the new UI.

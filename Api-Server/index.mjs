@@ -107,7 +107,7 @@ app.get('/files', (req, res) => {
 // Access Uploaded File Endpoint
 app.get('/uploads/:filename', (req, res) => {
     const { filename } = req.params;
-    const filePath = path.join(uploadFolder, filename);
+    const filePath = path.isAbsolute(uploadFolder) ? path.join(uploadFolder, filename) : path.resolve(uploadFolder, filename);
 
     res.sendFile(filePath, (err) => {
         if (err) {
@@ -120,7 +120,7 @@ app.get('/uploads/:filename', (req, res) => {
 // Delete Uploaded File Endpoint
 app.delete('/uploads/:filename', (req, res) => {
     const { filename } = req.params;
-    const filePath = path.join(uploadFolder, filename);
+    const filePath = path.isAbsolute(uploadFolder) ? path.join(uploadFolder, filename) : path.resolve(uploadFolder, filename);
 
     fs.unlink(filePath, (err) => {
         if (err) {

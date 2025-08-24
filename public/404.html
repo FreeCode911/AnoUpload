@@ -1,39 +1,27 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 - Page Not Found</title>
-    <style>
-        body {
-            font-family: 'Courier New', Courier, monospace;
-            background-color: #1a1a1a;
-            color: #c5c8c6;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .message-container {
-            text-align: center;
-            padding: 30px;
-        }
-        h1 {
-            color: #8abeb7;
-            font-size: 36px;
-            margin-bottom: 20px;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-        }
-        p {
-            font-size: 18px;
-        }
-    </style>
-</head>
-<body>
-    <div class="message-container">
-        <h1>404 - Page Not Found</h1>
-        <p>The page you are looking for does not exist.</p>
-    </div>
-</body>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>404 — Not found</title>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+        <style>
+            html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial}
+            body{display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#071124,#0f1720);color:#e6eef8}
+            .box{max-width:820px;padding:36px;border-radius:14px;background:rgba(255,255,255,0.02);box-shadow:0 20px 60px rgba(2,6,23,0.6);text-align:center}
+            h1{font-size:72px;margin:0 0 8px;color:#8b5cf6}
+            h2{margin:0 0 12px;font-weight:600}
+            p{margin:0 0 18px;color:#94a3b8}
+            a{color:#6ee7b7;text-decoration:none}
+            @media(max-width:520px){h1{font-size:48px}}
+        </style>
+    </head>
+    <body>
+        <div class="box">
+            <h1>404</h1>
+            <h2>Page not found</h2>
+            <p>Sorry, we couldn’t find the page you were looking for. You can go back to the <a href="/">home page</a>.</p>
+            <div style="margin-top:18px;color:#94a3b8;font-size:13px">If you think this is an error, check the URL or contact support.</div>
+        </div>
+    </body>
 </html>
